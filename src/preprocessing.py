@@ -6,7 +6,7 @@ __author__ = "Orn Gudjonsson"
 
 from stemming.porter2 import stem
 from nltk.corpus import stopwords
-from string import punctuation, maketrans
+import regex as re
 
 def stem_words(string):
     """
@@ -24,8 +24,8 @@ def remove_stopwords(words):
 def remove_duplicates(words):
     return list(set(words))
 
-def remove_punctuation(string):
-    return string.translate(maketrans("", ""), punctuation)
+def remove_punctuation(text):
+        return re.sub(ur"\p{P}+", "", text)
 
 def preprocess(string):
     return remove_duplicates(
