@@ -16,8 +16,11 @@ class EspnSpider(scrapy.Spider):
             yield scrapy.Request(response.urljoin(url), callback=self.parse_article)
 
     def parse_article(self, response):
-        contentlist = response.xpath('//div[@class="article-body"]/p/text()').extract()
+        contentlist = response.xpath('//div[@class="article-body"]//p/text()').extract()
         article = "".join(contentlist)
+        if not article.strip():
+            return
+
         item = NbaItem()
         item['text'] = article
         item['url'] = response.url
