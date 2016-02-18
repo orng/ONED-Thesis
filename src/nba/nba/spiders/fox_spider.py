@@ -1,8 +1,14 @@
 #!/usr/bin/env
 
 import scrapy 
-from nba.items import NbaItem
 import regex as re
+
+from nba.items import NbaItem
+import sys
+sys.path.append('..')
+from preprocessing import preprocess
+sys.path.remove('..')
+
 
 PAGE_LIMIT = 50
 BASE_URL = 'http://www.foxsports.com/nba/news'
@@ -39,11 +45,12 @@ class FoxSpider(scrapy.Spider):
     def parse_article(self, response):
         contentlist = response.xpath('//div[@class="flex-article-content content-body story-body"]//p/text()').extract()
         article = "".join(contentlist)
-        if not article.strip():
+        words = preprocess(article)
+        if words == []:
             return
 
         item = NbaItem()
-        item['text'] = article
+        item['text'] = words
         item['url'] = response.url
         yield item
 

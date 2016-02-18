@@ -3,6 +3,11 @@
 import scrapy 
 from nba.items import NbaItem
 
+import sys
+sys.path.append('..')
+from preprocessing import preprocess
+sys.path.remove('..')
+
 class EspnSpider(scrapy.Spider):
     name='espn'
     allowed_domains = ['espn.go.com']
@@ -18,11 +23,13 @@ class EspnSpider(scrapy.Spider):
     def parse_article(self, response):
         contentlist = response.xpath('//div[@class="article-body"]//p/text()').extract()
         article = "".join(contentlist)
-        if not article.strip():
+        words = preprocess(article)
+        if words == []:
+            #we don't want empty articles
             return
 
         item = NbaItem()
-        item['text'] = article
+        item['text'] = words
         item['url'] = response.url
         yield item
 

@@ -13,7 +13,7 @@ def loadJson(filename, texts):
 
 def main():
     texts = list()
-    for item in ['nba/espn.json', 'nba/fox.json', 'nba/nba.json']:
+    for item in ['nba/fox.json', 'nba/nba.json']:
         texts = loadJson(item, texts)
 
     i = 0
