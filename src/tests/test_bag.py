@@ -12,7 +12,7 @@ class BagTests(unittest.TestCase):
         expected = set([frozenset(['dog', 'cat']),
                     frozenset(['dog', 'cow']),
                     frozenset(['cat', 'cow'])])
-        minSet, bags = bag.bagify2(words, [])
+        minSet, bags = bag.bagify(words, [])
         print bags
         self.assertEqual(expected, minSet)
         self.assertEqual(minSet, bags[0])
@@ -27,7 +27,7 @@ class BagTests(unittest.TestCase):
                     frozenset(['cat', 'cow'])])
         expectedBags = oldbags + [expectedMin]
 
-        minSet, bags = bag.bagify2(words, oldbags)
+        minSet, bags = bag.bagify(words, oldbags)
 
         self.assertEqual(expectedMin, minSet)
         self.assertEqual(expectedBags, bags)
@@ -37,10 +37,40 @@ class BagTests(unittest.TestCase):
         words = ["dog"]
         oldbags = [{frozenset(['dog'])}]
 
-        minSet, bags = bag.bagify2(words, oldbags)
+        minSet, bags = bag.bagify(words, oldbags)
 
         self.assertEqual(set([]), minSet)
         self.assertEqual(oldbags, bags)
 
 
+    def test_minimalNew_first(self):
+        """Test enumeration of first article"""
+        words = ['dog', 'cat', 'cow']
+        minNews = bag.minimalNew(words, [])
+        self.assertEqual(set(words), minNews)
+
+    def test_minmalNew_newWord(self):
+        """Tests enumeration when some words have been seen already"""
+        words = ['dog', 'cat', 'cow']
+        oldwords = [['dog', 'cat', 'chicken']]
+        minNews = bag.minimalNew(words, oldwords)
+        expectedWords = set(['cow'])
+        self.assertEqual(expectedWords, minNews)
+
+    def test_minimalNew_newPair(self):
+        """tests enumaration when there is no new word, but a new pair"""
+        oldwords = [['dog', 'cat'], ['dog', 'cow']]
+        words = ['dog', 'cat', 'cow']
+        minNews = bag.minimalNew(words, oldwords)
+        expectedWords = set([frozenset(['cat', 'cow'])])
+        self.assertEqual(expectedWords, minNews)
+        
+    def test_getPairs(self):
+        """Tests the getPairs function"""
+        words = ['dog', 'cat', 'cow']
+        expected = [frozenset(['dog', 'cat']),
+                    frozenset(['dog', 'cow']),
+                    frozenset(['cat', 'cow'])]
+        result = bag.getPairs(words)
+        self.assertEqual(set(expected), set(result))
 

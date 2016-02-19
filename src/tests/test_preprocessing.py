@@ -9,6 +9,13 @@ import preprocessing as pre
 
 class PreprocessingTests(unittest.TestCase):
         
+
+    def test_remove_numbers(self):
+        words = ['dog', 'cat', '999', '1234', '0001']
+        expected = ['dog', 'cat']
+        result = pre.remove_numbers(words)
+        self.assertEqual(expected, result)
+
     def test_remove_punctuation(self):
         string = "Great... wtf? ffs!"
         expected = "Great wtf ffs"

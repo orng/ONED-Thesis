@@ -27,9 +27,14 @@ def remove_duplicates(words):
 def remove_punctuation(text):
         return re.sub(ur"\p{P}+", "", text)
 
+def remove_numbers(words):
+    return filter(lambda x: not x.isdigit(), words)
+    
+
 def preprocess(string):
     return remove_duplicates(
             remove_stopwords(
                 stem_words(
-                    remove_punctuation(
-                        string))))
+                    remove_numbers(
+                        remove_punctuation(
+                            string)))))
