@@ -20,23 +20,23 @@ def minimalNew(newBag, oldBags):
     """returns the minimal new set for the given words and previously seen bags."""
     newWords = []
     oldWords = []
+    newPairs = []
+    oldBagWords = oldBags[0]
+    oldBagPairs = oldBags[1]
     for word in newBag:
-        if not inOldBags(word, oldBags):
+        if not inOldBags(word, oldBagWords):
             newWords.append(word)
         else:
             oldWords.append(word)
-
-    if newWords != []:
-        return set(newWords)
     else:
-        newPairs = []
+        if oldBags == [[],[]]:
+            pairs = getPairs(newWords)
+            return [set(newWords), set(pairs)]
         pairs = getPairs(oldWords)
-        oldPairBags = [getPairs(x) for x in oldBags]
         for pair in pairs:
-            if not inOldBags(pair, oldPairBags):
-                return set([pair])
-                #newPairs.append(pair)
-        return set(newPairs)
+            if not inOldBags(pair, oldBagPairs):
+                newPairs.append(pair)
+    return [set(newWords), set(newPairs)]
 
         
 

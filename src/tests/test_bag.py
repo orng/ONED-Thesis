@@ -46,24 +46,28 @@ class BagTests(unittest.TestCase):
     def test_minimalNew_first(self):
         """Test enumeration of first article"""
         words = ['dog', 'cat', 'cow']
-        minNews = bag.minimalNew(words, [])
-        self.assertEqual(set(words), minNews)
+        minNews = bag.minimalNew(words, [[],[]])
+        self.assertEqual(set(words), minNews[0])
+        self.assertEqual(set(bag.getPairs(words)), minNews[1])
+        self.assertEqual([set(words), set(bag.getPairs(words))], minNews)
 
     def test_minmalNew_newWord(self):
         """Tests enumeration when some words have been seen already"""
-        words = ['dog', 'cat', 'cow']
-        oldwords = [['dog', 'cat', 'chicken']]
-        minNews = bag.minimalNew(words, oldwords)
-        expectedWords = set(['cow'])
-        self.assertEqual(expectedWords, minNews)
+        words = ['dog', 'cow']
+        oldbags = [['dog', 'cat'], [frozenset(['dog', 'cat'])]]
+        minNews = bag.minimalNew(words, oldbags)
+        expected = set(['cow'])
+        self.assertEqual([expected, set([])], minNews)
 
     def test_minimalNew_newPair(self):
         """tests enumaration when there is no new word, but a new pair"""
         oldwords = [['dog', 'cat'], ['dog', 'cow']]
+        oldPairs = [set([frozenset(['dog', 'cat'])]), set([frozenset(['dog', 'cow'])])]
+        oldBags = [oldwords, oldPairs]
         words = ['dog', 'cat', 'cow']
-        minNews = bag.minimalNew(words, oldwords)
-        expectedWords = set([frozenset(['cat', 'cow'])])
-        self.assertEqual(expectedWords, minNews)
+        minNews = bag.minimalNew(words, oldBags)
+        expectedPairs = set([frozenset(['cat', 'cow'])])
+        self.assertEqual([set([]), expectedPairs], minNews)
         
     def test_getPairs(self):
         """Tests the getPairs function"""

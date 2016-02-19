@@ -21,7 +21,7 @@ def main():
     thebag = []
     progress = 0
     old = list()
-    oldBags = []
+    oldBags = [[],[]]
     words = []
     for text in reversed(texts):
         i = i+1
@@ -35,9 +35,11 @@ def main():
 
         words = text['text']
         minimalNew = bag.minimalNew(words, oldBags)
-        if minimalNew != set([]):
-            oldBags.append(words)
-            old.append(minimalNew)
+        if minimalNew != [set([]), set([])]:
+            oldBags[0].append(minimalNew[0])
+            oldBags[1].append(minimalNew[1])
+        else:
+            old.append(text['url'])
 
     sys.stdout.write("Processing: {0}/{1}\n".format(i, len(texts)))
     sys.stdout.write("Done!\n")
