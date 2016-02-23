@@ -48,16 +48,16 @@ class BagTests(unittest.TestCase):
         words = ['dog', 'cat', 'cow']
         minNews = bag.minimalNew(words, [[],[]])
         self.assertEqual(set(words), minNews[0])
-        self.assertEqual(set(bag.getPairs(words)), minNews[1])
-        self.assertEqual([set(words), set(bag.getPairs(words))], minNews)
+        self.assertEqual(set(bag.getPairs(words)), minNews[2])
+        self.assertEqual([set(words), set([]), set(bag.getPairs(words))], minNews)
 
     def test_minmalNew_newWord(self):
         """Tests enumeration when some words have been seen already"""
         words = ['dog', 'cow']
         oldbags = [['dog', 'cat'], [frozenset(['dog', 'cat'])]]
         minNews = bag.minimalNew(words, oldbags)
-        expected = set(['cow'])
-        self.assertEqual([expected, set([])], minNews)
+        expected = [set(['cow']), set([]), set([frozenset(['cow', 'dog'])])]
+        self.assertEqual(expected, minNews)
 
     def test_minimalNew_newPair(self):
         """tests enumaration when there is no new word, but a new pair"""
@@ -67,7 +67,7 @@ class BagTests(unittest.TestCase):
         words = ['dog', 'cat', 'cow']
         minNews = bag.minimalNew(words, oldBags)
         expectedPairs = set([frozenset(['cat', 'cow'])])
-        self.assertEqual([set([]), expectedPairs], minNews)
+        self.assertEqual([set([]), expectedPairs, set([])], minNews)
         
     def test_getPairs(self):
         """Tests the getPairs function"""
@@ -77,4 +77,19 @@ class BagTests(unittest.TestCase):
                     frozenset(['cat', 'cow'])]
         result = bag.getPairs(words)
         self.assertEqual(set(expected), set(result))
+
+    def test_getPairsZip(self):
+        """Tests the overloaded getLists function
+        that takes 2 lists"""
+        words1 = ['dog', 'cat']
+        words2 = ['cow', 'chicken']
+        expected = [frozenset(['dog', 'cow']),
+                    frozenset(['dog', 'chicken']),
+                    frozenset(['cat', 'cow']), 
+                    frozenset(['cat', 'chicken'])]
+        result = bag.getPairsZip(words1, words2)
+        self.assertEqual(set(expected), set(result))
+
+
+
 

@@ -3,8 +3,10 @@
 import json
 
 def checkJson(filename):
+    articles = []
     with open(filename, 'r')  as f:
-        articles = json.loads(f.read())
+        for line in f:
+            articles.append(json.loads(line))
 
     length = 0
     processed = {}

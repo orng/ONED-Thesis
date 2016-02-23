@@ -14,6 +14,13 @@ def getPairs(words):
         i = i+1
     return pairs
 
+def getPairsZip(words1, words2):
+    """
+    Given two lists of words, generates a list of all pairs
+    that can be created by taking a word from each list
+    """
+    return [frozenset([x,y]) for x in words1 for y in words2]
+
 
 
 def minimalNew(newBag, oldBags):
@@ -29,14 +36,17 @@ def minimalNew(newBag, oldBags):
         else:
             oldWords.append(word)
     else:
+        """
         if oldBags == [[],[]]:
             pairs = getPairs(newWords)
             return [set(newWords), set(pairs)]
+        """
         pairs = getPairs(oldWords)
         for pair in pairs:
             if not inOldBags(pair, oldBagPairs):
                 newPairs.append(pair)
-    return [set(newWords), set(newPairs)]
+        extraPairs = getPairsZip(newWords, oldWords) + getPairs(newWords)
+    return [set(newWords), set(newPairs), set(extraPairs)]
 
         
 
