@@ -1,0 +1,9 @@
+TODO:
+    Implement more efficient algorithm
+    Examine the results manually on shorter texts. Perhaps the first paragraph of the articles or other sources.
+    Possible following steps: depend on outcome of step 2:
+        if satisfactory: perhaps optimize runtime of algorithm
+        if not refine the method somehow.
+    Time permitting we look into the optimization problem.
+
+DEADLINES: send weekly reports to Peter before each monday.

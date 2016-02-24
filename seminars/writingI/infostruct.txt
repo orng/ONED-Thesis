@@ -1,0 +1,19 @@
+# Puzzle 1:
+
+## First Pararaph
+3-4-5-1-6-2
+
+## Second Paragraph:
+1-3-6-4-5-2
+
+## Comments:
+I very much prefer the first approach. It presents the 'problem' and then goes through how it is addressed in the problem.
+
+## Answer
+3-1-6-2-4-5
+
+# Puzzle 2
+
+## Solution
+First paragraph: 9-3-7-4-2-8
+Second paragraph: 10-6-1-5

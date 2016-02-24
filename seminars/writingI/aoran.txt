@@ -1,0 +1,9 @@
+Proof-reading articles I:
+
+E1:
+...Research shows that only 25% of __the__ functionalities are created inside __the__? car companies, while __the__ rest is just integrated after the delivery from __ suppliers. This way of working increases __the__ quality of delivered components since __the__ suppliers...
+...Such __ distributed development makes communication between OEMs and suppliers extremely difficult, especially during __the__development process.
+
+E2:
+...it is necessary to scale them to the desired range of values with __the__ lower limit set to one. This is important because in __the__ best scenario, they should not affect __the__ complexity calculation but can never decrease it. On the other hand, the number of exchanged signals which is the main and as such mandatory, __an__ attribute can have __the__ value zero, if ther eis no dependency between two software components. For some attibutes without (such as type of signals), it is necessary to include the weight factor in the CSM formula (inter-sub-system signals weights more than intra-sub-system, etc.). In __a__logical view, we focus on the following two attributes: the numer of exhcanged signals between software components and their type (intra-sub-system...)...
+...assigned to row i to __the__ software component assigned to column j of the CSM and the type(k)...concluded, toghther with Volvo experts, that intra-sub-system signals should have __the__ weight factor 1, inter-sub-systems signals __the__ weight factor 1.3 and inter-domain signals __the__ weight factor 1.8
