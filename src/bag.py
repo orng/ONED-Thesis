@@ -4,99 +4,85 @@
 
 __author__ = "Orn Gudjonsson"
 
-def getPairs(words):
-    pairs = []
-    i = 1
-    for word in words[:-1]:
-        for otherword in words[i:]:
-            newPair = frozenset([word, otherword])
-            pairs.append(newPair)
-        i = i+1
-    return pairs
+inf = float("+inf")
 
-def getPairsZip(words1, words2):
+def getSubsets(x, n):
     """
-    Given two lists of words, generates a list of all pairs
-    that can be created by taking a word from each list
+    Given a set or a list returns all possible subsets of size n
     """
-    return [frozenset([x,y]) for x in words1 for y in words2]
+    if n == 1:
+        return set([frozenset([i]) for i in x])
 
+    subsets = []
+    for item in x:
+        for y in getSubsets(x, n-1):
+            subset = y | frozenset([item])
+            if len(subset) == n:
+                subsets.append(subset)
+    return set(subsets)
 
-
-def minimalNew(newBag, oldBags):
-    """returns the minimal new set for the given words and previously seen bags."""
-    newWords = []
-    oldWords = []
-    newPairs = []
-    oldBagWords = oldBags[0]
-    oldBagPairs = oldBags[1]
-    for word in newBag:
-        if not inOldBags(word, oldBagWords):
-            newWords.append(word)
-        else:
-            oldWords.append(word)
-    else:
-        """
-        if oldBags == [[],[]]:
-            pairs = getPairs(newWords)
-            return [set(newWords), set(pairs)]
-        """
-        pairs = getPairs(oldWords)
-        for pair in pairs:
-            if not inOldBags(pair, oldBagPairs):
-                newPairs.append(pair)
-        extraPairs = getPairsZip(newWords, oldWords) + getPairs(newWords)
-    return [set(newWords), set(newPairs), set(extraPairs)]
-
-        
-
-
-def bagify(words, oldbags):
-    unique = []
-    i = 1
-    for word in words[:-1]:
-        #we can skip the last word
-        for otherword in words[i:]:
-            current = frozenset([word, otherword])
-            if not inOldBags(current, oldbags):
-                unique.append(current)
+def f(x, bags):
+    i = 0
+    for bag in bags:
+        if isSubset(x, bag):
+            return i
         i = i+1
 
-    minSet = set(unique)
-    if minSet is not set([]):
-        oldbags.append(minSet)
-    return (minSet, oldbags)
+def isNewAtM(x, bags, bagDict, m):
+    if bagDict.get(x, inf) < m:
+        return False
 
-def bagify2(words, oldbags):
-    """
-    Does the same as bagify only here oldbags is a set of pairs instead of a list of sets
-    """
-    newWords = set([])
-    oldWords = []
-    newPairs = []
-    i = 1
-    for word in words:
-        if word in oldbags[0]:
-            oldWords.append(word)
-        else:
-            newWords.add(word)
-            
-    for word in oldWords[:-1]:
-        #we can skip the last word
-        for otherword in words[i:]:
-            current = frozenset([word, otherword])
-            if current not in  oldbags:
-                newPairs.append(current)
-        i = i+1
+    retval = True
+    fval = f(x, bags)
+    if fval is not None:
+        yvalMin = inf
+        for y in x:
+            yval = bags.get(y, inf)
+            yvalMax = min(yvalMin, yval)
+            if yval < inf and isSubset(x, bags[yval]):
+                retval =  False
+        #store f(X) which equals the smallest f(y)
+        bagDict[x] = yvalMin
+    return retval 
 
-    minSet = set(newPairs)
-    if minSet is not set([]):
-        oldbags = oldbags | minSet
-    return (minSet, oldbags)
     
+def isSubset(a,b):
+    return a-b == set([])
 
-def inOldBags(item, oldbags):
-    for bag in oldbags:
-        if item in bag:
-            return True
-    return False
+def enumerateBagHelper(x, bags, bagDict, n, i):
+    newSets = []
+    subsets = getSubsets(x, n)
+    for subset in subsets:
+        if isNewAtM(subset, bags, bagDict, i):
+            newSets.append(subset)
+            #i = f(subset, enumeratedBags) if i is not None
+            bagDict[subset] = i
+    return set(newSets)
+
+def enumerateBag(newBag, bags, bagDict):
+    """
+    Performs enumeration using the algorithm described in section 2.2
+    """
+    x = newBag
+    enumeration = set([])
+    #TODO: do the "stop as soon as all further X would be supersets.." thing
+    for n in range(1, 3):
+        enumeration = enumeration | enumerateBagHelper(newBag, bags, bagDict, n, len(bags) + 1)
+        newBag = getSubsets(newBag, n) - enumeration
+        if newBag == set([]):
+            break
+    return (enumeration, bagDict)
+
+def enumerate(bags):
+    """
+    Enumerates a list of 'bags'
+    """
+    enumeratedBags = []
+    bagDict = {}
+    i = 1
+    for bag in bags:
+        newEnumeration, bagDict = enumerateBag(bag, enumeratedBags, bagDict, i)
+        enumeratedBags.append(newEnumeration)
+        i = i+1
+    return enumeratedBags, bagDict
+
