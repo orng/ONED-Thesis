@@ -14,5 +14,5 @@ class NbaItem(scrapy.Item):
     # name = scrapy.Field()
     #title = scrapy.Field()
     text = scrapy.Field()
-    #date = scrapy.Field()
+    date = scrapy.Field()
     url = scrapy.Field()

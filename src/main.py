@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-import bag
 import json
 import sys
-
 from pprint import pprint
+
+import bag
 
 def loadJson(filename, texts):
     with open(filename, 'r') as f:
@@ -15,15 +15,19 @@ def loadJson(filename, texts):
 
 def main():
     texts = list()
-    for item in reversed(['nba/fox.json', 'nba/nba.json']):
-        texts = loadJson(item, texts)
+    #for item in ['nba/fox.jl', 'nba/nba.jl']:
+        #texts = loadJson(item, texts)
+    #texts = sorted(texts, key=lambda d: d['date'])
+    with open('nba/processed.jl', 'r') as f:
+        texts = json.loads(f.read())
 
     words = []
     enumeratedBags = []
     bagDict = {}
     old = []
+    enum = []
     i = 0
-    for text in reversed(texts):
+    for text in texts:
         i = i+1
         sys.stdout.write("Processing: {0}/{1}".format(i, len(texts)))
         sys.stdout.flush()
@@ -32,6 +36,7 @@ def main():
         words = text['text']
         enumeration, bagDict = bag.enumerateBag(words, enumeratedBags, bagDict)
         enumeratedBags.append(set(words))
+        enum.append(enumeration)
         if enumeration == set([]):
             old.append(text['url'])
 
@@ -39,6 +44,11 @@ def main():
     sys.stdout.write("Done!\n")
 
     pprint(old)
+
+    with open('dict.result', 'w') as f:
+        pprint(bagDict, f)
+    with open('enumeration.result', 'w') as f:
+        pprint(enum, f)
 
 
 if __name__ == '__main__':

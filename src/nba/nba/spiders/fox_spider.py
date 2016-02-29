@@ -1,16 +1,19 @@
 #!/usr/bin/env
 
+import sys
+from datetime import datetime
+
 import scrapy 
 import regex as re
+import dateutil.parser
 
 from nba.items import NbaItem
-import sys
 sys.path.append('..')
 from preprocessing import preprocess
 sys.path.remove('..')
 
 
-PAGE_LIMIT = 50
+PAGE_LIMIT = 3
 BASE_URL = 'http://www.foxsports.com/nba/news'
 
 class FoxSpider(scrapy.Spider):
@@ -44,13 +47,28 @@ class FoxSpider(scrapy.Spider):
 
     def parse_article(self, response):
         contentlist = response.xpath('//div[@class="flex-article-content content-body story-body"]//p/text()').extract()
-        article = "".join(contentlist)
+        if len(contentlist) > 2:
+            article = "".join(contentlist[:2])
+        else:
+            article = "".join(contentlist)
         words = preprocess(article)
         if words == []:
             return
 
+        #Get the date the article was posted
+        posted = response.xpath('//time/text()').extract()
+        for item in posted:
+            try:
+                date = dateutil.parser.parse(item)
+            except ValueError:
+                continue
+        if date is None:
+            date = datetime.now()
+    
+
         item = NbaItem()
         item['text'] = words
         item['url'] = response.url
+        item['date'] = date
         yield item
 
