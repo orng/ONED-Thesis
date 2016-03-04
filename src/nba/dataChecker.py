@@ -12,7 +12,7 @@ def checkJson(filename):
     processed = {}
     res = []
     for article in articles:
-        articleSet = frozenset(article['text'])
+        #articleSet = frozenset(article['text'])
         articleName = article['url']
         if articleSet in processed.values():
             originalName = getKeyByValue(processed, articleSet)[0]

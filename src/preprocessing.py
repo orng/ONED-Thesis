@@ -13,6 +13,7 @@ def stem_words(string):
     Given a string returns a list of all the words, stemmed.
     """
     return [stem(x.lower()) for x in string.split()]
+    #return [x.lower() for x in string.split()]
 
 def remove_stopwords(words):
     """
@@ -25,7 +26,7 @@ def remove_duplicates(words):
     return list(set(words))
 
 def remove_punctuation(text):
-        return re.sub(ur"\p{P}+", "", text)
+        return re.sub(ur"\p{P}+", " ", text)
 
 def remove_numbers(words):
     return filter(lambda x: not x.isdigit(), words)

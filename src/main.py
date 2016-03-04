@@ -5,6 +5,9 @@ import sys
 from pprint import pprint
 
 import bag
+from preprocessing import preprocess
+
+RESULTFILE = 'result.txt'
 
 def loadJson(filename, texts):
     with open(filename, 'r') as f:
@@ -15,17 +18,29 @@ def loadJson(filename, texts):
 
 def main():
     texts = list()
-    #for item in ['nba/fox.jl', 'nba/nba.jl']:
-        #texts = loadJson(item, texts)
-    #texts = sorted(texts, key=lambda d: d['date'])
-    with open('nba/processed.jl', 'r') as f:
-        texts = json.loads(f.read())
+    #wordbanks = ['nba/fox.jl', 'nba/nba.jl']
+    wordbanks = [
+            'nba/reuters.jl', 
+            'nba/cbs.jl', 
+            'nba/pbs.jl',
+            #'nba/politico.jl',
+            #'processedLong.jl',
+        ]
+    for item in wordbanks:
+        texts = loadJson(item, texts)
+    texts = sorted(texts, key=lambda d: d['date'])
+
+    #empty result file
+    with open(RESULTFILE, 'w'):
+        pass
+
+    #with open('nba/processed.jl', 'r') as f:
+        #texts = json.loads(f.read())
 
     words = []
     enumeratedBags = []
     bagDict = {}
     old = []
-    enum = []
     i = 0
     for text in texts:
         i = i+1
@@ -33,10 +48,12 @@ def main():
         sys.stdout.flush()
         sys.stdout.write("\r")
 
-        words = text['text']
+        words = preprocess(text['text'])
         enumeration, bagDict = bag.enumerateBag(words, enumeratedBags, bagDict)
+
+        printEnumeration(text['url'], text['text'], enumeration)
+
         enumeratedBags.append(set(words))
-        enum.append(enumeration)
         if enumeration == set([]):
             old.append(text['url'])
 
@@ -45,10 +62,41 @@ def main():
 
     pprint(old)
 
-    with open('dict.result', 'w') as f:
-        pprint(bagDict, f)
-    with open('enumeration.result', 'w') as f:
-        pprint(enum, f)
+def stringify(s):
+    if type(s) not in map(type, [set([]), frozenset([])]):
+        return unicode(s)
+    l = list(s)
+    isMultiSet = len(l) > 1
+    if isMultiSet:
+        retStr = "("
+        for item in l[:-1]:
+            retStr += stringify(item) + ', '
+        retStr += stringify(l[-1])
+        retStr += ")"
+    else:
+        retStr = ""
+        retStr += stringify(l[0])
+    return retStr
+
+
+def outputToString(output):
+    if output == []:
+        return "{}"
+    retStr = ''
+    for item in output[:-1]:
+        retStr += stringify(item) + ', '
+    retStr += stringify(output[-1])
+    return '{' + retStr + '}'
+
+
+def printEnumeration(url, words, enumeration):
+    lineString = u'Url: {url}\nWords: {words}\nOutput: {output}\n\n'
+    outputStr = outputToString(list(enumeration))
+    with open(RESULTFILE, 'a') as f:
+        lineString = lineString.format(url=url, words=words, output=outputStr)
+        f.write(lineString.encode('UTF-8'))
+    
+
 
 
 if __name__ == '__main__':

@@ -13,7 +13,7 @@ from preprocessing import preprocess
 sys.path.remove('..')
 
 BASE_URL = 'http://www.nba.com/news/news_archive.html' 
-PAGE_LIMIT = 2
+PAGE_LIMIT = 0
 
 class NbaSpider(scrapy.Spider):
     name='nba'
@@ -41,12 +41,13 @@ class NbaSpider(scrapy.Spider):
 
 
     def parse_article(self, response):
-        contentlist = response.xpath('//section[@id="nbaArticleContent"]//p/text()').extract()
+        contentlist = response.xpath('//section[@id="nbaArticleContent"]//*/text()').extract()
         if len(contentlist) > 2:
-            article = "".join(contentlist[:2])
+            article = "".join(contentlist[:3])
         else:
             article = "".join(contentlist)
-        words = preprocess(article)
+        #words = preprocess(article)
+        words = article
         if words == []:
             return
 

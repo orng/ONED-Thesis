@@ -13,7 +13,7 @@ from preprocessing import preprocess
 sys.path.remove('..')
 
 
-PAGE_LIMIT = 3
+PAGE_LIMIT = 2
 BASE_URL = 'http://www.foxsports.com/nba/news'
 
 class FoxSpider(scrapy.Spider):
@@ -22,7 +22,7 @@ class FoxSpider(scrapy.Spider):
     start_urls = [BASE_URL,]
 
     def __init__(self):
-        self.currentPage = 0
+        self.currentPage = 1
         super(FoxSpider, self)
 
     def parse(self, response):
@@ -46,13 +46,15 @@ class FoxSpider(scrapy.Spider):
 
 
     def parse_article(self, response):
-        contentlist = response.xpath('//div[@class="flex-article-content content-body story-body"]//p/text()').extract()
+        contentlist = response.xpath('//div[@class="flex-article-content content-body story-body"]//*/text()').extract()
         if len(contentlist) > 2:
-            article = "".join(contentlist[:2])
+            article = "".join(contentlist[:3])
         else:
             article = "".join(contentlist)
-        words = preprocess(article)
-        if words == []:
+        #words = preprocess(article)
+        words = article
+        if words == "":
+        #if words == []:
             return
 
         #Get the date the article was posted
