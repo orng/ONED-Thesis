@@ -22,7 +22,7 @@ def getSubsets(x, n):
     return set(subsets)
 
 def f(x, bags):
-    i = 0
+    i = 1
     for bag in bags:
         if isSubset(x, bag):
             return i
@@ -37,10 +37,10 @@ def isNewAtM(x, bags, bagDict, m):
     if fval is not None:
         yvalMin = inf
         for y in x:
-            yval = bags.get(y, inf)
-            yvalMax = min(yvalMin, yval)
-            if yval < inf and isSubset(x, bags[yval]):
+            yval = bagDict.get(y, inf)
+            if yval < inf and isSubset(x, bags[yval-1]):
                 retval =  False
+                yvalMin = min(yvalMin, yval)
         #store f(X) which equals the smallest f(y)
         bagDict[x] = yvalMin
     return retval 
@@ -62,8 +62,16 @@ def enumerateBagHelper(x, bags, bagDict, n, i):
 def enumerateBag(newBag, bags, bagDict):
     """
     Performs enumeration using the algorithm described in section 2.2
+
+    Args: 
+        newBag: a list of words to enumerate 
+            :: [string]
+        bags:  a list of previously seen bags. Each bag is a set of frozensets
+            :: [set([frozenset([string])]]
+        bagDict: a dictionary mapping previously seen sets to the bag nr
+                (1-indexed) where they were first seen.
+            :: dict(frozenset([string])) | dict(frozenset([frozenset([string])))
     """
-    x = newBag
     enumeration = set([])
     #TODO: do the "stop as soon as all further X would be supersets.." thing
     for n in range(1, 3):
@@ -85,4 +93,18 @@ def enumerate(bags):
         enumeratedBags.append(newEnumeration)
         i = i+1
     return enumeratedBags, bagDict
+
+def enumerationToGraph(enumeration):
+    """Given an enumeration (a set of frozensets with one or two elements)
+    returns the set of nodes (words involved in pairs) and the set of edges
+    (pairs)
+    """
+    pairs = [x for x in enumeration if len(x) > 1];
+    #nodes are the words that are involved in pairs
+    nodes = set([])
+    for pair in pairs:
+        for elem in pair:
+            nodes.add(elem)
+    return nodes, set(pairs)
+
 

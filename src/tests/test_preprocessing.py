@@ -18,7 +18,7 @@ class PreprocessingTests(unittest.TestCase):
 
     def test_remove_punctuation(self):
         string = "Great... wtf? ffs!"
-        expected = "Great wtf ffs"
+        expected = "Great  wtf  ffs "
         result = pre.remove_punctuation(string)
         self.assertEqual(expected, result)
 
