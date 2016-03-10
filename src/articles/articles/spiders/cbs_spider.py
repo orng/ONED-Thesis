@@ -7,13 +7,13 @@ import scrapy
 import regex as re
 import dateutil.parser
 
-from nba.items import NbaItem
+from articles.items import ArticleItem
 sys.path.append('..')
 from preprocessing import preprocess
 sys.path.remove('..')
 
 
-PAGE_LIMIT = 16
+PAGE_LIMIT = 4
 START_PAGE_NR = 1
 BASE_URL = 'http://www.cbsnews.com/feature/election-2016/{PAGE_NR}/'
 
@@ -37,7 +37,7 @@ class CbsSpider(scrapy.Spider):
 
                 date = dateutil.parser.parse(dateString)
 
-                item = NbaItem()
+                item = ArticleItem()
                 item['text'] = text
                 item['url'] = response.urljoin(url)
                 item['date'] = date

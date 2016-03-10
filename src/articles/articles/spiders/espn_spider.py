@@ -1,7 +1,7 @@
 #!/usr/bin/env
 
 import scrapy 
-from nba.items import NbaItem
+from articles.items import ArticleItem
 
 import sys
 sys.path.append('..')
@@ -28,7 +28,7 @@ class EspnSpider(scrapy.Spider):
             #we don't want empty articles
             return
 
-        item = NbaItem()
+        item = ArticleItem()
         item['text'] = words
         item['url'] = response.url
         yield item

@@ -7,7 +7,7 @@ import scrapy
 import regex as re
 import dateutil.parser
 
-from nba.items import NbaItem
+from articles.items import ArticleItem
 sys.path.append('..')
 from preprocessing import preprocess
 sys.path.remove('..')
@@ -60,7 +60,7 @@ class NbaSpider(scrapy.Spider):
         except (ValueError, IndexError):
             date = datetime.now()
 
-        item = NbaItem()
+        item = ArticleItem()
         item['text'] = words
         item['url'] = response.url
         item['date'] = date

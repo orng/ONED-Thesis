@@ -18,12 +18,12 @@ def loadJson(filename, texts):
 
 def main():
     texts = list()
-    #wordbanks = ['nba/fox.jl', 'nba/nba.jl']
+    #wordbanks = ['articles/fox.jl', 'articles/articles.jl']
     wordbanks = [
-            'nba/reuters.jl', 
-            'nba/cbs.jl', 
-            'nba/pbs.jl',
-            #'nba/politico.jl',
+            'articles/reuters.jl', 
+            'articles/cbs.jl', 
+            'articles/pbs.jl',
+            #'articles/politico.jl',
             #'processedLong.jl',
         ]
     for item in wordbanks:
@@ -34,7 +34,7 @@ def main():
     with open(RESULTFILE, 'w'):
         pass
 
-    #with open('nba/processed.jl', 'r') as f:
+    #with open('articles/processed.jl', 'r') as f:
         #texts = json.loads(f.read())
 
     words = []
@@ -93,10 +93,17 @@ def outputToString(output):
     retStr += stringify(output[-1])
     return '{' + retStr + '}'
 
+def nodeDegreesToString(nodeDegrees):
+    res = ""
+    formatString = "{node}: {degree}, "
+    for nodeTuple in nodeDegrees:
+        res += formatString.format(node=nodeTuple[0], degree=nodeTuple[1])
+    return res
+
 
 def printEnumeration(url, words, enumeration):
     #lineString = u'Url: {url}\nWords: {words}\nOutput: {output}\n\n'
-    lineString = u'Url: {url}\nWords: {words}\nNew Words: {newWords}\nNew Pairs: {pairs}\nNodes: {nodes}\nNr. of Edges: {edges}\n\n\n'
+    lineString = u'Url: {url}\nWords: {words}\nNew Words: {newWords}\nNew Pairs: {pairs}\nNodes: {nodes}\n\n\n'
     #outputStr = outputToString(list(enumeration))
     newWords = [x for x in enumeration if len(x) < 2]
     pairs = [x for x in enumeration if len(x) == 2]
@@ -104,6 +111,8 @@ def printEnumeration(url, words, enumeration):
     pairStr = outputToString(pairs)
     nodes, edges = bag.enumerationToGraph(enumeration)
     nodeStr = outputToString(list(nodes))
+    nodeDegrees = bag.nodeDegrees(edges)
+    nodeDegreeStr = nodeDegreesToString(nodeDegrees)
     with open(RESULTFILE, 'a') as f:
         lineString = lineString.format(
                 url=url,
@@ -111,8 +120,9 @@ def printEnumeration(url, words, enumeration):
                 #output=outputStr,
                 newWords=newWordStr,
                 pairs=pairStr,
-                nodes=nodeStr,
-                edges=len(edges),
+                #nodes=nodeStr,
+                nodes=nodeDegreeStr,
+                #edges=len(edges),
             )
         f.write(lineString.encode('UTF-8'))
 
