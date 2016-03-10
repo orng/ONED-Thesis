@@ -187,5 +187,25 @@ class BagTests(unittest.TestCase):
         self.assertEqual(expectedNodes, nodes)
         self.assertEqual(expectedEdges, nrOfEdges)
 
+    def test_nodeDegrees(self):
+        nodes = set([
+                    frozenset([
+                        frozenset(['dog']),
+                        frozenset(['chicken']),
+                    ]),
+                    frozenset([
+                        frozenset(['dog']),
+                        frozenset(['cat']),
+                    ]),
+                    frozenset([
+                        frozenset(['cat']),
+                        frozenset(['cow']),
+                    ])
+                ])
+        expected = [('dog', 2), ('cat', 2), ('cow', 1), ('chicken', 1)]
+        result = bag.nodeDegrees(nodes)
+        self.assertEqual(set(expected), set(result))
+        self.assertTrue(result[0][1] == result[1][1] == 2)
+        self.assertTrue(result[2][1] == result[3][1] == 1)
         
-        
+

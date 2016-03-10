@@ -4,6 +4,8 @@
 
 __author__ = "Orn Gudjonsson"
 
+from collections import defaultdict
+
 inf = float("+inf")
 
 def getSubsets(x, n):
@@ -107,4 +109,23 @@ def enumerationToGraph(enumeration):
             nodes.add(elem)
     return nodes, set(pairs)
 
+def nodeDegrees(edges):
+    """
+    Given a set of eges, return a list of tuples where
+    the first element is a node and the second is the degree of that node,
+    that is the number of edges it is included in
+
+    Input:
+        edges: a set of edges on the form 
+            frozenset([frozenset([a]), frozenset([b])])
+
+    Ouput:
+        a list of tuples [(word, degree)]
+    """
+    vertices = defaultdict(int)
+    for edge in edges:
+        for vertex in edge:
+            vertices[list(vertex)[0]] += 1
+
+    return sorted(zip(vertices.keys(), vertices.values()), key=lambda x: x[1], reverse=True)
 
