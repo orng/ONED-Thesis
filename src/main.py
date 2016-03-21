@@ -2,10 +2,12 @@
 
 import json
 import sys
+import argparse
 from pprint import pprint
+from collections import defaultdict
 
 import bag
-from preprocessing import preprocess
+import preprocessing as pre
 
 RESULTFILE = 'result.txt'
 
@@ -16,16 +18,18 @@ def loadJson(filename, texts):
     return texts
     
 
-def main():
+def main(threshold, filterType, wordbanks):
     texts = list()
     #wordbanks = ['articles/fox.jl', 'articles/articles.jl']
-    wordbanks = [
+    """wordbanks = [
             'articles/reuters.jl', 
             'articles/cbs.jl', 
             'articles/pbs.jl',
             #'articles/politico.jl',
             #'processedLong.jl',
-        ]
+            #'history.jl',
+            #'ww2.jl',
+        ]"""
     for item in wordbanks:
         texts = loadJson(item, texts)
     texts = sorted(texts, key=lambda d: d['date'])
@@ -34,9 +38,6 @@ def main():
     with open(RESULTFILE, 'w'):
         pass
 
-    #with open('articles/processed.jl', 'r') as f:
-        #texts = json.loads(f.read())
-
     words = []
     enumeratedBags = []
     bagDict = {}
@@ -44,16 +45,36 @@ def main():
     i = 0
     nodes = set([])
     edges = set([])
+    wordFrequency = defaultdict(int)
     for text in texts:
         i = i+1
         sys.stdout.write("Processing: {0}/{1}".format(i, len(texts)))
         sys.stdout.flush()
         sys.stdout.write("\r")
 
-        words = preprocess(text['text'])
-        enumeration, bagDict = bag.enumerateBag(words, enumeratedBags, bagDict)
+        words = pre.preprocess(text['text'])
+        if filterType == 'cf':
+            uncommonWords = pre.filter_common(words, wordFrequency, threshold)
+            wordFrequency  = pre.collection_frequency(words, wordFrequency)
+        elif filterType == 'df':
+            uncommonWords = pre.filter_common(words, wordFrequency, threshold)
+            wordFrequency = pre.document_frequency(words, wordFrequency)
+        elif filterType == 'tfidf':
+            wordFrequency = pre.document_frequency(words, wordFrequency)
+            uncommonWords = pre.filter_tfidf(words, wordFrequency, threshold, i)
+        else:
+            raise Exception("Invalid filter type" + filterType)
 
-        printEnumeration(text['url'], text['text'], enumeration)
+        #wordFrequency = pre.collection_frequency(words, wordFrequency)
+        #uncommonWords = pre.filter_tfidf(words, wordFrequency, 0.5, i)
+        #uncommonWords = pre.filter_common(words, wordFrequency, threshold)
+        #wordFrequency = pre.document_frequency(words, wordFrequency)
+        words = set(words)
+        uncommonWords = set(uncommonWords)
+        filteredWords = [x for x in words if x not in uncommonWords]
+        enumeration, bagDict = bag.enumerateBag(uncommonWords, enumeratedBags, bagDict)
+
+        printEnumeration(text['url'], text['text'], enumeration, filteredWords)
 
         enumeratedBags.append(bag.getSubsets(words, 1))
         if enumeration == set([]):
@@ -61,8 +82,10 @@ def main():
 
     sys.stdout.write("Processing: {0}/{1}\n".format(i, len(texts)))
     sys.stdout.write("Done!\n")
-
-    pprint(old)
+    print(old)
+    #totalCount = sum([x[1] for x in wordFrequency.items()])
+    #frequencyTuples = sorted([(x, y/float(totalCount)) for (x,y) in wordFrequency.items()], key = lambda x: x[1], reverse=True)
+    #pprint(frequencyTuples[:30])
 
 
 def stringify(s):
@@ -101,9 +124,9 @@ def nodeDegreesToString(nodeDegrees):
     return res
 
 
-def printEnumeration(url, words, enumeration):
+def printEnumeration(url, words, enumeration, filteredWords):
     #lineString = u'Url: {url}\nWords: {words}\nOutput: {output}\n\n'
-    lineString = u'Url: {url}\nWords: {words}\nNew Words: {newWords}\nNew Pairs: {pairs}\nNodes: {nodes}\n\n\n'
+    lineString = u'Url: {url}\nWords: {words}\nNew Words: {newWords}\nNew Pairs: {pairs}\nNodes: {nodes}\nFiltered:{filtered}\n\n\n'
     #outputStr = outputToString(list(enumeration))
     newWords = [x for x in enumeration if len(x) < 2]
     pairs = [x for x in enumeration if len(x) == 2]
@@ -123,10 +146,16 @@ def printEnumeration(url, words, enumeration):
                 #nodes=nodeStr,
                 nodes=nodeDegreeStr,
                 #edges=len(edges),
+                filtered=filteredWords,
             )
         f.write(lineString.encode('UTF-8'))
 
     
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description="Process the provided data")
+    parser.add_argument('-t', '--threshold', type=float, default=0.10)
+    parser.add_argument('-f', '--filter', default='cf')
+    parser.add_argument('articles', nargs='+')
+    args = parser.parse_args()
+    main(args.threshold, args.filter, args.articles)

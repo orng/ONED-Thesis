@@ -4,6 +4,7 @@
 
 __author__ = "Orn Gudjonsson"
 
+from math import log10
 from collections import defaultdict
 from stemming.porter2 import stem
 from nltk.corpus import stopwords
@@ -36,41 +37,83 @@ def remove_numbers(words):
 def to_wordlist(string):
     return remove_stopwords(
             stem_words(
-                remove_numbers(
+                #remove_numbers(
                     remove_punctuation(
-                        string))))
+                        string)))#)
 
 
 def preprocess(string):
-    return remove_duplicates(to_wordlist(string))
+    #return remove_duplicates(to_wordlist(string))
+    return to_wordlist(string)
 
+def document_frequency(wordList, docFreqDict):
+    """
+    Add 1 for each item in wordList to docFreqDict
+    """
+    for word in set(wordList):
+        docFreqDict[word] += 1
+    return docFreqDict
 
+def collection_frequency(wordList, freqDict):
+    """
+    Add the number of a currances of each word to freqDict
+    """
+    for word in wordList:
+        freqDict[word] += 1
+    return freqDict
 
-def word_frequency(wordList):
+def term_frequency(wordList):
     """
     Given a list of words, returns a dict mapping words 
     to how often they appear in the list
     """
     freqDict = defaultdict(int)
-    for word in wordList:
-        freqDict[word] += 1
-    return freqDict
+    return collection_frequency(wordList, freqDict)
 
-def filter_common(wordList, frequencyDict, n):
-    frequencyTuples = sorted(frequencyDict.items(), key = lambda x: x[1])
-    totalCount = sum(frequencyDict.values())
-    freqList = [(x, y/float(totalCount)) for (x,y) in frequencyTuples]
+def filter_common(wordList, frequencyDict, threshold):
+    """
+    Filter the word list based on the top 10% most common items 
+    in the frequencyDict
+    """
+    freqTuples = sorted(frequencyDict.items(), key = lambda x: x[1], reverse=True)
     totalFreq = 0
+    total = sum(frequencyDict.values())
     mostFrequent = []
-    #TODO: perhaps limit to a certain amount of elements in mostFrequent
-    while totalFreq < n and len(freqList) > 1:
-        nextTuple = freqList[0]
+    if total == 0:
+        return wordList
+    for i in range(int(threshold*len(frequencyDict))):
+    #while totalFreq/float(total) < threshold and len(freqTuples) > 1:
+        nextTuple = freqTuples[0]
+        frequency = nextTuple[1]
         mostFrequent.append(nextTuple[0])
-        totalFreq += nextTuple[1]
-        freqList = freqList[1:]
-    return filter(lambda x: x in mostFrequent, wordList)
+        totalFreq += frequency
+        freqTuples = freqTuples[1:]
+    #print mostFrequent
+    return filter(lambda x: x not in mostFrequent, wordList)
         
+def filter_tfidf(wordList, dfDict, threshold, n):
+    """
+    Filter the given wordlist using td-idf.
+    Using the document frequency dict dfDict
+    Any item who's td-idf score is below threshold is ignored
+    n is the number of documents
+    """
+    tfDict = term_frequency(wordList)
+    itemsToFilter = []
+    td_idf = 0
+    for word in wordList:
+        df = dfDict[word]
+        tf = tfDict[word]
+        idf = log10(n/float(df))
+        tf_idf = tf*idf
+        if tf_idf < threshold*(1-1/float(n)):
+            itemsToFilter.append(word)
+    return removeListFromList(itemsToFilter, wordList)
 
+def removeListFromList(filterList, wordList):
+    return filter(lambda x: x not in filterList, wordList)
+
+    
 
         
 
