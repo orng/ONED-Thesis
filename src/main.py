@@ -46,7 +46,7 @@ def main(threshold, filterType, wordbanks):
     nodes = set([])
     edges = set([])
     wordFrequency = defaultdict(int)
-    for text in texts:
+    for text in texts[:30]:
         i = i+1
         sys.stdout.write("Processing: {0}/{1}".format(i, len(texts)))
         sys.stdout.flush()
@@ -54,33 +54,28 @@ def main(threshold, filterType, wordbanks):
 
         words = pre.preprocess(text['text'])
         if filterType == 'cf':
-            uncommonWords = pre.filter_common(words, wordFrequency, threshold)
+            wordsToFilter = pre.filter_common(words, wordFrequency, threshold)
             wordFrequency  = pre.collection_frequency(words, wordFrequency)
         elif filterType == 'df':
-            uncommonWords = pre.filter_common(words, wordFrequency, threshold)
+            wordsToFilter = pre.filter_overThreshold(words, wordFrequency, threshold)
             wordFrequency = pre.document_frequency(words, wordFrequency)
         elif filterType == 'tfidf':
+            wordsToFilter = pre.filter_tfidf(words, wordFrequency, threshold, i)
             wordFrequency = pre.document_frequency(words, wordFrequency)
-            uncommonWords = pre.filter_tfidf(words, wordFrequency, threshold, i)
         else:
             raise Exception("Invalid filter type" + filterType)
 
-        #wordFrequency = pre.collection_frequency(words, wordFrequency)
-        #uncommonWords = pre.filter_tfidf(words, wordFrequency, 0.5, i)
-        #uncommonWords = pre.filter_common(words, wordFrequency, threshold)
-        #wordFrequency = pre.document_frequency(words, wordFrequency)
         words = set(words)
-        uncommonWords = set(uncommonWords)
-        filteredWords = [x for x in words if x not in uncommonWords]
-        enumeration, bagDict = bag.enumerateBag(uncommonWords, enumeratedBags, bagDict)
+        enumeration, bagDict = bag.enumerateBag(words, enumeratedBags, bagDict)
+        #enumeration, bagDict = bag.enumerateMultiBag(uncommonWords, enumeratedBags, bagDict)
 
-        printEnumeration(text['url'], text['text'], enumeration, filteredWords)
+        printEnumeration(text['url'], text['text'], enumeration, wordsToFilter)
 
         enumeratedBags.append(bag.getSubsets(words, 1))
         if enumeration == set([]):
             old.append(text['url'])
 
-    sys.stdout.write("Processing: {0}/{1}\n".format(i, len(texts)))
+    sys.stdout.write("Processing: {0}/{1}\n".format(i, len(texts[:100])))
     sys.stdout.write("Done!\n")
     print(old)
     #totalCount = sum([x[1] for x in wordFrequency.items()])
@@ -123,13 +118,24 @@ def nodeDegreesToString(nodeDegrees):
         res += formatString.format(node=nodeTuple[0], degree=nodeTuple[1])
     return res
 
+def flattenPairSet(pairSet):
+    """
+    input: frozenset([frozenset(['foo']), frozenset(['bar'])])
+    output: frozenset(['foo', 'bar'])
+    """
+    return frozenset([y for x in pairSet for y in x])
 
-def printEnumeration(url, words, enumeration, filteredWords):
+def printEnumeration(url, words, enumeration, wordsToFilter):
     #lineString = u'Url: {url}\nWords: {words}\nOutput: {output}\n\n'
     lineString = u'Url: {url}\nWords: {words}\nNew Words: {newWords}\nNew Pairs: {pairs}\nNodes: {nodes}\nFiltered:{filtered}\n\n\n'
     #outputStr = outputToString(list(enumeration))
-    newWords = [x for x in enumeration if len(x) < 2]
-    pairs = [x for x in enumeration if len(x) == 2]
+    newWords = ["".join(x) for x in enumeration if len(x) < 2]
+    newWords = pre.removeListFromList(wordsToFilter,newWords)
+    pairs = [flattenPairSet(x) for x in enumeration if len(x) == 2]
+    print pairs
+    print wordsToFilter
+    pairs = pre.removePairs(wordsToFilter, pairs)
+    print pairs
     newWordStr = outputToString(newWords)
     pairStr = outputToString(pairs)
     nodes, edges = bag.enumerationToGraph(enumeration)
@@ -146,9 +152,14 @@ def printEnumeration(url, words, enumeration, filteredWords):
                 #nodes=nodeStr,
                 nodes=nodeDegreeStr,
                 #edges=len(edges),
-                filtered=filteredWords,
+                filtered=wordsToFilter,
             )
         f.write(lineString.encode('UTF-8'))
+    with open('edges.csv', 'a') as f:
+        edges = [tuple(edge) for edge in edges]
+        for edge in edges:
+            f.write(list(edge[0])[0] + "," +list(edge[1])[0] +"\n")
+
 
     
 

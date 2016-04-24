@@ -34,21 +34,30 @@ def remove_numbers(words):
     return filter(lambda x: not x.isdigit(), words)
     
 
-def to_wordlist(string):
+def to_wordlist(text):
     return remove_stopwords(
             stem_words(
                 #remove_numbers(
                     remove_punctuation(
-                        string)))#)
+                        text)))#)
+
+def get_sentences(text):
+    return re.split(r' *[\.\?!\n][\'"\)\]]*\s+', text)
+
+def to_wordlist_multi(text):
+    sentences = get_sentences(text)
+    return [tuple(to_wordlist(sentence)) for sentence in sentences]
 
 
 def preprocess(string):
     #return remove_duplicates(to_wordlist(string))
     return to_wordlist(string)
 
+
+#TODO: MOVE FOLLOWING FUNCTIONS TO OTHER MODULE
 def document_frequency(wordList, docFreqDict):
     """
-    Add 1 for each item in wordList to docFreqDict
+    Add 1 for each unique item in wordList to docFreqDict
     """
     for word in set(wordList):
         docFreqDict[word] += 1
@@ -67,12 +76,17 @@ def term_frequency(wordList):
     Given a list of words, returns a dict mapping words 
     to how often they appear in the list
     """
+    #freqDict = defaultdict(float)
     freqDict = defaultdict(int)
-    return collection_frequency(wordList, freqDict)
+    freqDict = collection_frequency(wordList, freqDict)
+    #l = float(len(wordList))
+    #for key, value in freqDict.iteritems():
+        #freqDict[key] /= l
+    return freqDict
 
 def filter_common(wordList, frequencyDict, threshold):
     """
-    Filter the word list based on the top 10% most common items 
+    Filter the word list based on the top threshold most common items 
     in the frequencyDict
     """
     freqTuples = sorted(frequencyDict.items(), key = lambda x: x[1], reverse=True)
@@ -88,8 +102,18 @@ def filter_common(wordList, frequencyDict, threshold):
         mostFrequent.append(nextTuple[0])
         totalFreq += frequency
         freqTuples = freqTuples[1:]
-    #print mostFrequent
-    return filter(lambda x: x not in mostFrequent, wordList)
+    return mostFrequent
+
+def filter_overThreshold(wordList, frequencyDict, threshold):
+    """
+    Filter the word list base on the frequencyDict
+    anything above the given threshold is removed
+    """
+    wordsToFilter = []
+    for word in set(wordList):
+        if frequencyDict[word] > threshold:
+            wordsToFilter.append(word)
+    return wordsToFilter
         
 def filter_tfidf(wordList, dfDict, threshold, n):
     """
@@ -101,22 +125,29 @@ def filter_tfidf(wordList, dfDict, threshold, n):
     tfDict = term_frequency(wordList)
     itemsToFilter = []
     td_idf = 0
-    for word in wordList:
+    for word in set(wordList):
         df = dfDict[word]
+        if df == 0: 
+            continue
         tf = tfDict[word]
-        idf = log10(n/float(df))
+        idf = log10(n/(float(df)))
         tf_idf = tf*idf
-        if tf_idf < threshold*(1-1/float(n)):
+        if tf_idf < threshold:
             itemsToFilter.append(word)
-    return removeListFromList(itemsToFilter, wordList)
+    return wordsToFilter
+    #return removeListFromList(itemsToFilter, wordList)
 
 def removeListFromList(filterList, wordList):
     return filter(lambda x: x not in filterList, wordList)
 
-    
+def removePairs(filterList, pairList):
+    return filter(lambda s: not isSetItemInList(filterList, s), pairList)
 
-        
-
-
+def isSetItemInList(filterList, pairSet):
+    for item in pairSet:
+        if item in filterList:
+            #print "I: {item}, P: {pair}, F: {filtered}". format(item=item, pair=pairSet, filtered=filterList)
+            return True
+    return False
 
 

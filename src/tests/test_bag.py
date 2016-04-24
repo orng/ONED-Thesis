@@ -170,6 +170,28 @@ class BagTests(unittest.TestCase):
         self.assertEqual(expectedEnum, enumeration)
         self.assertEqual(expectedDict, bagDict)
 
+    def test_enumerateMultiBag(self):
+        """
+        Test using the multiple bags method.
+        """
+        words = [['dog', 'cat'], ['cat', 'chicken']]
+        oldBags = [
+                set([
+                    frozenset([
+                        frozenset(['cat'])
+                    ])
+                ])]
+        oldDict = {frozenset(['cat']): 1}
+
+        expectedEnum = set([frozenset(['dog']), frozenset(['chicken'])])
+        expectedDict = {
+                        frozenset(['cat']): 1,
+                        frozenset(['dog']): 2,
+                        frozenset(['chicken']): 2
+                    }
+        enumeration, bagDict = bag.enumerateMultiBag(words, oldBags, oldDict)
+        self.assertEqual(expectedEnum, enumeration)
+        self.assertEqual(expectedDict, bagDict)
 
         
 
@@ -207,5 +229,6 @@ class BagTests(unittest.TestCase):
         self.assertEqual(set(expected), set(result))
         self.assertTrue(result[0][1] == result[1][1] == 2)
         self.assertTrue(result[2][1] == result[3][1] == 1)
+
         
 

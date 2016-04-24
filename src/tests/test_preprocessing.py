@@ -41,7 +41,7 @@ class PreprocessingTests(unittest.TestCase):
         expected = {
                 'dog': 3,
                 'cat': 2,
-                'cow': 1
+                'cow': 1,
                 }
         result = pre.term_frequency(words)
         self.assertEqual(expected, result)
@@ -74,7 +74,7 @@ class PreprocessingTests(unittest.TestCase):
         d1 = ['dog']
         d2 = ['dog', 'cat', 'cat', 'cat']
         df = pre.document_frequency(d1, defaultdict(int))
-        df = pre.document_frequency(d2, df)
+        #df = pre.document_frequency(d2, df)
         expected = ['cat', 'cat', 'cat']
         result = pre.filter_tfidf(d2, df, 0.9, 2)
         self.assertEqual(expected, result)
@@ -86,6 +86,21 @@ class PreprocessingTests(unittest.TestCase):
         rest = ['cow', 'chicken', 'pig']
         animals = dogs + cats + rest
         expected = cats + rest
-        wordFreq = pre.term_frequency(animals)
-        result = pre.filter_common(animals, wordFreq, 0.10)
+        wordFreq = pre.collection_frequency(animals, defaultdict(int))
+        result = pre.filter_common(animals, wordFreq, 0.25)
+        self.assertEqual(expected, result)
+
+    def test_get_sentences(self):
+        s1 = "This is first"
+        s2 = "This is second"
+        s3 = "Third has A.B.B.A"
+        text = ". ".join([s1, s2, s3])
+        expected = [s1, s2, s3]
+        result = pre.get_sentences(text)
+        self.assertEqual(expected, result)
+    
+    def test_to_wordlist_multi(self):
+        text = "Cat dog. Dog cow."
+        expected = [('cat', 'dog'), ('dog', 'cow')]
+        result = pre.to_wordlist_multi(text)
         self.assertEqual(expected, result)
