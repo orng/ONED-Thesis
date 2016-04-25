@@ -10,6 +10,7 @@ from stemming.porter2 import stem
 from nltk.corpus import stopwords
 import regex as re
 
+
 def stem_words(string):
     """
     Given a string returns a list of all the words, stemmed.
@@ -94,24 +95,28 @@ def filter_common(wordList, frequencyDict, threshold):
     total = sum(frequencyDict.values())
     mostFrequent = []
     if total == 0:
-        return wordList
+        return []
     for i in range(int(threshold*len(frequencyDict))):
     #while totalFreq/float(total) < threshold and len(freqTuples) > 1:
-        nextTuple = freqTuples[0]
+        nextTuple = freqTuples[i]
+        
         frequency = nextTuple[1]
         mostFrequent.append(nextTuple[0])
         totalFreq += frequency
-        freqTuples = freqTuples[1:]
     return mostFrequent
 
-def filter_overThreshold(wordList, frequencyDict, threshold):
+def filter_overThreshold(wordList, frequencyDict, threshold, seenDocuments):
     """
     Filter the word list base on the frequencyDict
     anything above the given threshold is removed
     """
     wordsToFilter = []
+    if seenDocuments == 0:
+        return wordsToFilter
+
+    n = float(seenDocuments)
     for word in set(wordList):
-        if frequencyDict[word] > threshold:
+        if frequencyDict[word]/n > threshold:
             wordsToFilter.append(word)
     return wordsToFilter
         
@@ -134,7 +139,7 @@ def filter_tfidf(wordList, dfDict, threshold, n):
         tf_idf = tf*idf
         if tf_idf < threshold:
             itemsToFilter.append(word)
-    return wordsToFilter
+    return itemsToFilter 
     #return removeListFromList(itemsToFilter, wordList)
 
 def removeListFromList(filterList, wordList):
@@ -143,10 +148,17 @@ def removeListFromList(filterList, wordList):
 def removePairs(filterList, pairList):
     return filter(lambda s: not isSetItemInList(filterList, s), pairList)
 
+def flattenPairSet(pairSet):
+    """
+    input: frozenset([frozenset(['foo']), frozenset(['bar'])])
+    output: frozenset(['foo', 'bar'])
+    """
+    return frozenset([y for x in pairSet for y in x])
+
 def isSetItemInList(filterList, pairSet):
-    for item in pairSet:
+    flatPairs = flattenPairSet(pairSet)
+    for item in flatPairs:
         if item in filterList:
-            #print "I: {item}, P: {pair}, F: {filtered}". format(item=item, pair=pairSet, filtered=filterList)
             return True
     return False
 
