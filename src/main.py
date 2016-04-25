@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import json
 import sys
 import argparse
 from pprint import pprint
@@ -8,19 +7,13 @@ from collections import defaultdict
 import pdb
 import regex as re
 
-#TODO: place this and accompanied stuff someplace sensible
-from stemming.porter2 import stem
 import bag
 import preprocessing as pre
+from helpers import *
 
 RESULTFILE = 'result.txt'
 
-def loadJson(filename, texts):
-    with open(filename, 'r') as f:
-        for line in f:
-            texts.append(json.loads(line))
-    return texts
-    
+
 def main(threshold, filterType, wordbanks, resultFile=RESULTFILE, useSubBags=False):
     texts = list()
     #wordbanks = ['articles/fox.jl', 'articles/articles.jl']
@@ -56,6 +49,7 @@ def main(threshold, filterType, wordbanks, resultFile=RESULTFILE, useSubBags=Fal
         sys.stdout.write("\r")
 
         words = pre.preprocess(text['text'])
+        wordsToFilter = []
         if filterType == 'cf':
             wordsToFilter = pre.filter_common(words, wordFrequency, threshold)
             wordFrequency  = pre.collection_frequency(words, wordFrequency)
@@ -65,6 +59,8 @@ def main(threshold, filterType, wordbanks, resultFile=RESULTFILE, useSubBags=Fal
         elif filterType == 'tfidf':
             wordsToFilter = pre.filter_tfidf(words, wordFrequency, threshold, i)
             wordFrequency = pre.document_frequency(words, wordFrequency)
+        elif filterType == 'none':
+            pass
         else:
             raise Exception("Invalid filter type" + filterType)
 
@@ -89,73 +85,6 @@ def main(threshold, filterType, wordbanks, resultFile=RESULTFILE, useSubBags=Fal
     #frequencyTuples = sorted([(x, y/float(totalCount)) for (x,y) in wordFrequency.items()], key = lambda x: x[1], reverse=True)
     #pprint(frequencyTuples[:30])
 
-def extractString(s):
-    if type(s) in map(type, [u'', '']):
-        return s
-    if len(s) == 0:
-        return ""
-    return extractString(list(s)[0])
-
-def stringify(s, textList):
-    """Converts a set to string"""
-    if type(s) not in map(type, [set([]), frozenset([])]):
-        return unicode(s)
-    l = list(s)
-    isMultiSet = len(l) > 1
-    if isMultiSet:
-        retStr = "("
-        for item in l[:-1]:
-            retStr += stringify(item, textList) + ', '
-        retStr += stringify(l[-1], textList)
-        retStr += ")"
-        if len(l) == 2:
-            #TODO: deal with larger tuples than pairs?
-            distance = calculateWordDistance(l[0], l[1], textList)
-            retStr += ": " + str(distance)
-    else:
-        retStr = ""
-        retStr += stringify(l[0], textList)
-    return retStr
-
-
-def outputToString(output, textList):
-    """Converts a list of sets to string"""
-    if output == []:
-        return "{}"
-    retStr = ''
-    for item in output[:-1]:
-        retStr += stringify(item, textList) + ', '
-    retStr += stringify(output[-1], textList)
-    return '{' + retStr + '}'
-
-def nodeDegreesToString(nodeDegrees):
-    res = ""
-    formatString = "{node}: {degree}, "
-    for nodeTuple in nodeDegrees:
-        res += formatString.format(node=nodeTuple[0], degree=nodeTuple[1])
-    return res
-
-def find(lst, item):
-    """
-    returns list of indices where item is within list
-    empty list if not precent in list
-    """
-    return [i for i, x in enumerate(lst) if x==item]
-
-def calculateWordDistance(word1, word2, textList):
-    word1 = extractString(word1)
-    word2 = extractString(word2)
-    #pdb.set_trace()
-    indexes1 = find(textList, word1)
-    indexes2 = find(textList, word2)
-    #indexes1 = [m.start() for m in re.finditer(word1, text)]
-    #indexes2 = [m.start() for m in re.finditer(word2, text)]
-    minDist = sys.maxint 
-    for i1 in indexes1:
-        for i2 in indexes2:
-            dist = abs(i1-i2)
-            minDist = min(dist, minDist)
-    return minDist
 
 def printEnumeration(url, words, enumeration, wordsToFilter, filename):
     #lineString = u'Url: {url}\nWords: {words}\nOutput: {output}\n\n'
@@ -186,10 +115,12 @@ def printEnumeration(url, words, enumeration, wordsToFilter, filename):
                 filtered=wordsToFilter,
             )
         f.write(lineString.encode('UTF-8'))
+    """
     with open('edges.csv', 'a') as f:
         edges = [tuple(edge) for edge in edges]
         for edge in edges:
             f.write(list(edge[0])[0] + "," +list(edge[1])[0] +"\n")
+    """
 
 
 def massRun():
