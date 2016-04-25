@@ -95,11 +95,13 @@ def printEnumeration(url, words, enumeration, wordsToFilter, filename):
     newWords = pre.removeListFromList(wordsToFilter,newWords)
     pairs = [x for x in enumeration if len(x) == 2]
     pairs = pre.removePairs(wordsToFilter, pairs)
+    newWordStr = outputToString(newWords)
     textList = pre.to_wordlist(words)
-    newWordStr = outputToString(newWords, textList)
-    pairStr = outputToString(pairs, textList)
+    distanceDict = distanceDictFromPairs(pairs, textList)
+    #pairStr = outputToString(pairs)
+    pairStr = distanceDictToString(distanceDict)
     nodes, edges = bag.enumerationToGraph(enumeration)
-    nodeStr = outputToString(list(nodes), textList)
+    nodeStr = outputToString(list(nodes))
     nodeDegrees = bag.nodeDegrees(edges)
     nodeDegreeStr = nodeDegreesToString(nodeDegrees)
     with open(filename, 'a') as f:
