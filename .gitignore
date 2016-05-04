@@ -1,5 +1,7 @@
 # Project specific
 src/results
+text/build
+text/aux
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
