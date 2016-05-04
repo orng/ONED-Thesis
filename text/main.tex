@@ -1,12 +1,55 @@
 \documentclass[12pt]{report}
-\usepackage[utf8]{inputenc}
+%\usepackage[utf8]{inputenc}
+\usepackage{fontspec}
 \usepackage{graphicx}
 \graphicspath{ {images/} }
+\usepackage{csquotes}
+
+\usepackage[
+    backend=biber,
+    style=authoryear-icomp,
+    sortlocale=en_GB,
+    natbib=true,
+    url=false, 
+    doi=true,
+    eprint=false
+]{biblatex}
+\addbibresource{references.bib}
 
 \title{
-  {On-line new event detection using minimal sets}\\
-  {\large Chalmers University of Technology}\\
-  {\includegraphics{Chalmers.jpg}}
+  {On-line New Event Detection Using Minimal Sets}\\
+  %{\large Chalmers University of Technology}\\
+  {\includegraphics[scale=0.5]{Chalmers.jpg}}
 }
-\author{Örn Guðjónsson}
-\date{Day Month Year}
+\author{Örn Guðjónsson \and Peter Damaschke}
+\date{\today} %TODO: fix date
+
+\begin{document}
+\maketitle
+
+%\chapter*{Abstract}
+\input{chapters/abstract}
+
+%\chapter*{Dedication}
+%To mum and dad
+
+%\chapter*{Declaration}
+%I declare that..
+
+%\chapter*{Acknowledgements}
+%I want to thank...
+
+\tableofcontents
+
+%\chapter{Introduction}
+\input{chapters/introduction}
+\input{chapters/background}
+\input{chapters/method}
+\input{chapters/results}
+\input{chapters/discussion}
+
+%\chapter{Conclusion}
+%\input{chapters/conclusion}
+
+\printbibliography
+\end{document}
