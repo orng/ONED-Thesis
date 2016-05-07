@@ -1,0 +1,26 @@
+==== p28-yang ====
+A Study on Retrospective and On-Line Event Detection
+Yang, Pierce and Carbonell
+
+Event detection is essentially a discovery problem i.e., *mining the data stream* for new patterns in document content.
+
+- Clustering, bottom up. can result in cluster hierarhcy which allows many levels of abstraction in the informaiont space to be observered.
+
+- Observations:
+  - news stories discussing the same event tend to be temporally proximate 
+  - time gap between bursts of topically similar storis is often an indication of different eventso
+  - A significant vocabulary shift and rapid changes in term frequency distributino are typical of stories reporing a new event, indicating the importance of dynamically updateing the corpus vocabulare and statistical term weights. A timely recognition of new patterns, including previously unseen proper names an proximity phrases, in the streams of stories is potentially useful for detection of the onset of a new event.:
+
+Approach:
+  Innvestigated two clustering methods: hierarchical based on *group-average-clustering* and one single-pass algorithm (incremental clustering). The former is for retrospective detection, the latter for both retrospective and on-line.
+
+A document is represented using a vector of weighted terms (words or phrases). Normalized vector sum of documents in cluster represents cluster (the centroid). Terms weighted with tf-idf and normalized. Only keep k top-ranking terms per vector and discard rest.
+
+For on-line used incremental IDF:
+first 'train' on some dataset and then update IDF for each document. IDF uses log2 not log10 like we do.
+
+Time window to limit prior context to m previous stories. Similarity score of each doc in time window computed. Flagged as new if all similarity scores are below threshold.
+Also tested decay weighting where documents further away in time are marked as less important.
+
+Preprocessing:
+  remove stopwords, stemming, term weighting.

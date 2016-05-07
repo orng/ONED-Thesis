@@ -1,0 +1,10 @@
+====p688-yang====
+Topic-conditioned Nevelty Detection
+Yang, Zhang, Carbonell, Jin
+
+Use a supervicsed learning algorithm to classify the on-line doument stream into pre-defined topic categories
+then perform topic-conitioned novelt detectino for documents in each topic.o
+
+Does topic specific stopword removal
+weighting using named entities
+topic sensitve feature weighting.

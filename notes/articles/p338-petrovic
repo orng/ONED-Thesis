@@ -1,0 +1,6 @@
+====p338-petrovic====
+Using Paraphrases for improving first story detection in news and Twitter
+Petrovic, Osborne, Lavrenko
+
+Method:
+  Paraphrase the articles and then use Locality-sensitive hashing (LSH), even space efficient LSH for comparisons.

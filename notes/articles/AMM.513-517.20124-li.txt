@@ -1,0 +1,27 @@
+====AMM.513-517.2024====
+A new online new event detection algorithm based on event merging and event splitting
+Li, Tao and Fu
+2014
+
+Preprocessing:
+  segmentation, part-of-speech tagging and stopword remoaval.
+
+Method:
+  Incremental TF_iDF model
+  
+  calculate similarity of story and event
+
+  event model:
+    Event(story) = {object, place, subject, time}
+
+  base-algorithm:
+    1. preprocess each new incoming story S an express it using an elements-based model
+    2. If S is the first story, consider S as an event
+    3. if S is not the first story then compute the similarities of S with each existing event E_i and mark it as sim(S, E_i), select the event with max similarity and mark it as E
+    4. Compare the max similarity in step 3 with the pre-determine threshold, if the similarity is less than the threshold, then report a new event which is only composed of S, otherwise, S is merged into the event E.
+    5. iterate above until all stories handled
+
+  improved-algorithm:
+    avoids discarding of stories and splitting of event into several events at the beginning of the event form process and then effectively splits events which include several isolated events with the same describing objects but different subjects.
+
+

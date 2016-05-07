@@ -1,0 +1,17 @@
+====p330-brants====
+A system for new event detection
+Brants, Chen and Farahat
+
+
+Approach
+  Basic model
+    tf-idf weighting
+    either Hellinger distance or cosine distance used for similarity calculations
+    each document compared to all others using the distance function, if score above threshold then mark as new.
+    Short documents eliminated since they are likely to just be announcements and not contain any event.
+
+  Improved Model
+    use source-specific tf-idf model, since certain words are more common within particular sources, such as the names of shows that air on the same network etc.
+    ajust (normalize) similarity calculations by subtracting average similarity of current document to all other documents.
+    Ajust weights within ROIs, e.g. U.S. midterm elections and mexican presidential elections will contain similar words.
+    Check for segment overlapping using sliding window.

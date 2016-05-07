@@ -1,0 +1,14 @@
+===d15-1310-wurzer=====
+Twitter-scale New Event Detection via K-term Hashing
+Wurzer, Lavrenko, Osborne
+2015
+
+Approach operates in constant time/space and scales to very high volume streams. While others become progressiveily slower with each processed document.
+
+**NOTE: mentions LSH buckets (Petrovic et al. 2010)
+as attempt to speed up ONED that isn't clustering.
+
+Approach:
+  Document novelty is estimated as the proportion of sets containing k-terms from the document that have not appeared before.
+
+**NOTE**: SOUNDS REALLY SIMILAR TO OUR APPROACH!

@@ -1,0 +1,23 @@
+==== p37-allan ====
+On-line New Event Detection and Tracking
+Allan, Papka and Lavrenko
+
+What is an event?
+  somthing that happens at a particular time and place.
+  Event perhaps not entire straightforward, "the OJ Simpson saga" might be considered an event.o
+
+Method:
+  1. use feature extraction and selection techniques to build a query representation for the story's content
+  2. determine the query's initial threshold by evaluation the new story with the query
+  3. compare the new story against eatiler queries in memory
+  4. if the story does not trigger any previous query by exceeding its threshold, flag as new
+  5. if the sotry triggers existing query, flag as old
+  6. (optional) add story to agglomeration list of queries it triggered
+  7. (optional) rebuild existing queris using the story
+  8. add new query to memory
+
+  thresholds for comparisons can be function of time elapsed between stories.
+
+Article also presents evaluation methodology to use for measuring performance of NED approach.
+
+**NOTE**: our implementation will not be useful for event tracking. If we correctly flag a story as old we won't really be able to tell what story first reported the event and what other stories have reported the same event.

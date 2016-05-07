@@ -1,0 +1,5 @@
+====p374-allan====
+First Story Detection in TDT is hard
+Allan, Lavrenko, Jin
+
+First story detection is hard.

@@ -1,0 +1,6 @@
+====p207-he====
+Analyzing feature trajectories for Event Detection
+He, Chang and Lim
+2007
+
+Extract events by identifying lots of stuff like who, what where and when and complicated stuff. I didn't really understand.

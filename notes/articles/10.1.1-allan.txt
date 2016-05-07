@@ -1,0 +1,16 @@
+====10.1.1.42.8942-allan====
+On-Line New Event Detection using Single Pass Clustering
+Allan and Papka
+
+Single pass Clustering algorithm with a novel thresholding model.
+
+Can be difficult to determine the accurate definition of an event, it is easier to define the properties that specify when two events are the same. These properties define *event identity*.
+
+Algorithm:
+  1. Use feature extraction and selection techniques to build a query representation for the document's content
+  2. Determine the query's initial threshold by evaling the new doc with the query.
+  3. Compare the new doc agains previous queries in memory
+  4. If doc doesnt trigger previous query by exceeding threshold flag as new
+  5. else flag as old
+  6. (optional) add doc to agglomoration list of queries it triggered
+  7. (optional) rebuild existing queries using the doc    8. add new doc to memory.

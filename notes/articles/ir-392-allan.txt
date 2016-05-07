@@ -1,0 +1,18 @@
+===ir-392-allan=====
+Using Names and Topics for New Event Detection
+Allan and Kumaran 
+
+Uses named entities to create different distinct representations of each story.
+
+Entities considers: Event, Geopolitical Entity, Language, Person, Cardinal, Ordinal, Date and Time.
+
+Documents represented as term vectors with incremental TF-IDF weighting.
+
+Cosine similarity used to compare similarity of stories.
+three features extracted per incoming story:
+  the confidence score reported by baseline system,
+  the cosine similarity between only the named entities of the incoming story, S, and other stories X,
+  the cosine similarity between only the topic terms in S and X.
+
+Uses Support Vector Machine (SVM) classifier on those features.
+
