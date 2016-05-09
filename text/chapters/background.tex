@@ -1,12 +1,13 @@
 \chapter{Background}
 \label{chapter:background}
 
-The task of detecting new events within a stream of documents can be separated into two camps: In \emph{Retrospective Event Detection} focuses on discovering previously unidentified from a finite collection of article~\cite{yang198study}. \emph{On-line New Event Detection} (ONED), which is sometimes known as either simply \emph{New Event Detection} (NED) or \emph{First Story Detection} (FSD), instead deals with the problem as trying to identify new events in real-time as soon as they are arrive from live news feeds.
+The task of detecting new events within a stream of documents can be separated into two camps: \emph{Retrospective Event Detection} focuses on discovering previously unidentified events from a finite collection of articles~\cite{yang1998study}. \emph{On-line New Event Detection} (ONED), which is sometimes known as either simply \emph{New Event Detection} (NED) or \emph{First Story Detection} (FSD), instead deals with the problem as trying to identify new events in real-time as soon as they are arrive from live news feeds.
 
 On-line New Event Detection has seen much development in the past 15 years as it has been one of the topics covered by the \emph{Topic Detection and Tracking}(TDT) research program (TODO:missing citation). In this chapter we will present a brief overview of techniques used for ONED by other researchers within the field.
 
 \section{What are events?}
 The concept of events in daily speech can be somewhat ambiguous~\cite{papka1999online} and in order for us to reason about events it is important that we specify what we mean. "The United States invade Vietnam" could be considered an event but at the same time the whole Vietnam War could be considered an event. We use TDT's definition of events: An event is ``a particular thing that happens at a specific time and place, along with all necessary preconditions and unavoidable consequences''. [TODO: cite https://catalog.ldc.upenn.edu/docs/LDC2006T19/TDT2004V1.2.pdf]
+[TODO: elaborate]
 
 \section{Related works}
 A classical approach to ONED is to represent documents as term vectors where each term within a document is weighted using some metric, typically TF-IDF (term frequency-inverse document frequency)[TODO: citation] which are then compared in some way to the previously seen documents.

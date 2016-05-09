@@ -20,7 +20,7 @@ A first, naive approach could be to simply the detection of new events on the ex
 In stead of blindly flagging articles based on the existence of minimal sets we propose a method which automatically highlights and presents important informative word combinations by certain quantitative criteria such that the user can then quickly browse them and see which of them raise interest. This introduces the problem of having to prioritize the minimal sets identified for any incoming article.
 
 \section{Enumeration}
-TODO: explain Damaschke's enumeration algorithm as our base algorithm.
+TODO: explain Damaschke's enumeration algorithm as the basis for our method.
 
 \section{Pre-processing}
 Prior to extracting the minimal sets from an article the article must be preprocessed so that we can digest it. For our enumeration algorithm [TODO: ``enumeration'' is explained in Damaschke2015 but we must also explain it here before we talk about it] we treat articles as sets of words, \emph{bags}, and therefore we must pre-process any article that we receive as input before we can enumerate it and apply any of our methods. We tokenize the input articles, remove stopwords and punctuation and stem the tokenized words using the English porter2 stemmer provided by the NLTK. [TODO: add citation for NLTK and porter2]
