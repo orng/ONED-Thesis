@@ -1,13 +1,21 @@
 \documentclass[12pt]{report}
-%\usepackage[utf8]{inputenc}
+%prevent some stupid with fontspec and amsthm
+%see http://tex.stackexchange.com/questions/130491/xelatex-error-paragraph-ended-before-tempa-was-complete
+
+\let\zz\[\let\zzz\]
 \usepackage{fontspec}
+\let\[\zz\let\]\zzz
+
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 \usepackage{csquotes}
 
+\usepackage{amsthm} % for theorems
+\newtheorem{definition}{Definition}
+
 \usepackage[
     backend=biber,
-    style=authoryear-icomp,
+    style=numeric,
     sortlocale=en_GB,
     natbib=true,
     url=false, 
@@ -16,12 +24,25 @@
 ]{biblatex}
 \addbibresource{references.bib}
 
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\fancyhead{}
+\fancyhead[RO,LE]{\thesisTitle}
+\fancyfoot{}
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[LO,CE]{Chapter \thechapter}
+\fancyfoot[CO,RE]{\thesisAuthor}
+
+\newcommand{\thesisTitle}{On-line New Event Detection Using Minimal Sets}
+\newcommand{\thesisAuthor}{Örn Guðjónsson \and Peter Damaschke}
+
 \title{
-  {On-line New Event Detection Using Minimal Sets}\\
+  {\thesisTitle}\\
   %{\large Chalmers University of Technology}\\
   {\includegraphics[scale=0.5]{Chalmers.jpg}}
 }
-\author{Örn Guðjónsson \and Peter Damaschke}
+\author{\thesisAuthor}
 \date{\today} %TODO: fix date
 
 \begin{document}
@@ -41,15 +62,11 @@
 
 \tableofcontents
 
-%\chapter{Introduction}
 \input{chapters/introduction}
 \input{chapters/background}
 \input{chapters/method}
 \input{chapters/results}
 \input{chapters/discussion}
-
-%\chapter{Conclusion}
-%\input{chapters/conclusion}
 
 \printbibliography
 \end{document}
