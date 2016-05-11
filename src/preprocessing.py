@@ -4,7 +4,7 @@
 
 __author__ = "Orn Gudjonsson"
 
-from math import log10
+from math import log
 from collections import defaultdict
 from stemming.porter2 import stem
 from nltk.corpus import stopwords
@@ -137,12 +137,16 @@ def filter_tfidf(wordList, dfDict, threshold, n):
         df = dfDict[word]
         if df == 0: 
             continue
-        tf = tfDict[word]
-        idf = log10(n/(float(df)))
+        tf = log(tfDict[word] + 1.0, 2)
+        idf = log(n+1/(float(df + 0.5)), 2)
         tf_idf = tf*idf
-        if tf_idf < threshold:
-            itemsToFilter.append(word)
-    return itemsToFilter 
+        #if tf_idf < threshold:
+            #itemsToFilter.append(word)
+        itemsToFilter.append((word, tf_idf))
+    sortedItems = sorted(itemsToFilter, key=lambda x: x[1], reverse=True)
+    #print sortedItems[:int(threshold)]
+    wordsToFilter = [x[0] for x in sortedItems[int(threshold):]]
+    return wordsToFilter
     #return removeListFromList(itemsToFilter, wordList)
 
 def removeListFromList(filterList, wordList):
