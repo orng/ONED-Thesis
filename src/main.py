@@ -78,7 +78,7 @@ def main(threshold, filterType, wordbanks, resultFile=RESULTFILE, useSubBags=Fal
         if enumeration == set([]):
             old.append(text['url'])
 
-    sys.stdout.write("Processing: {0}/{1}\n".format(i, len(texts[:100])))
+    sys.stdout.write("Processing: {0}/{1}\n".format(i, len(texts)))
     sys.stdout.write("Done!\n")
     print(old)
     #totalCount = sum([x[1] for x in wordFrequency.items()])
@@ -100,7 +100,7 @@ def printEnumeration(url, words, enumeration, wordsToFilter, filename):
     distanceDict = distanceDictFromPairs(pairs, textList)
     #pairStr = outputToString(pairs)
     pairStr = distanceDictToString(distanceDict)
-    nodes, edges = bag.enumerationToGraph(enumeration)
+    nodes, edges = bag.enumerationToGraph(pairs)
     nodeStr = outputToString(list(nodes))
     nodeDegrees = bag.nodeDegrees(edges)
     nodeDegreeStr = nodeDegreesToString(nodeDegrees)
@@ -126,21 +126,21 @@ def printEnumeration(url, words, enumeration, wordsToFilter, filename):
 
 
 def massRun():
-    thresholds = [x*0.05 for x in range(1,20)]
-    filters = ['cf', 'df', 'tfidf']
+    thresholds = [x*0.1+0.05 for x in range(0,10)]
+    filters = ['cf', 'df', 'tfidf', 'none']
     articles = [
-            'articles/reuters.jl', 
-            'articles/cbs.jl', 
-            'articles/pbs.jl',
+                '../data/ww2.jl'
             ]
     useSubBags = [True, False]
-    filenameForm = "results/{filter}-{threshold}.txt"
+    filenameForm = "results/ww2-{filter}-{threshold}.txt"
     for f in filters:
         for t in thresholds:
             #for s in useSubBags:
                 #subBagStr = '-sub' if s else ''
                 filename = filenameForm.format(filter=f, threshold=t)
                 main(t, f, articles, filename, False)
+                if f=='none':
+                    break
 
     
 
@@ -149,10 +149,17 @@ if __name__ == '__main__':
     parser.add_argument('-m', '--massRun', action='store_true')
     parser.add_argument('-s', '--subBags', action='store_true')
     parser.add_argument('-t', '--threshold', type=float, default=0.10)
-    parser.add_argument('-f', '--filter', default='cf')
+    parser.add_argument('-f', '--filter', default='none')
+    parser.add_argument('-o', '--output', default=RESULTFILE)
     parser.add_argument('articles', nargs='*')
     args = parser.parse_args()
     if args.massRun:
         massRun()
     else:
-        main(args.threshold, args.filter, args.articles, useSubBags=args.subBags)
+        main(
+                args.threshold,
+                args.filter,
+                args.articles,
+                resultFile=args.output,
+                useSubBags=args.subBags
+            )

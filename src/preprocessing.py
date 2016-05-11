@@ -33,6 +33,9 @@ def remove_punctuation(text):
 
 def remove_numbers(words):
     return filter(lambda x: not x.isdigit(), words)
+
+def tokenize(text):
+    return nltk.word_tokenize(text)
     
 
 def to_wordlist(text):

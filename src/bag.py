@@ -119,12 +119,11 @@ def enumerate(bags):
         i = i+1
     return enumeratedBags, bagDict
 
-def enumerationToGraph(enumeration):
+def enumerationToGraph(pairs):
     """Given an enumeration (a set of frozensets with one or two elements)
     returns the set of nodes (words involved in pairs) and the set of edges
     (pairs)
     """
-    pairs = [x for x in enumeration if len(x) > 1];
     #nodes are the words that are involved in pairs
     nodes = set([])
     for pair in pairs:

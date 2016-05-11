@@ -41,7 +41,7 @@ def outputToString(output):
     return '{' + retStr + '}'
 
 def distanceDictToString(distanceDict):
-    fmtStr = '{pair}: {distance}'
+    fmtStr = u'{pair}: {distance}'
     output = ""
     if distanceDict == {}:
         return ""
@@ -55,7 +55,7 @@ def distanceDictToString(distanceDict):
 
 def nodeDegreesToString(nodeDegrees):
     res = ""
-    formatString = "{node}: {degree}, "
+    formatString = u"{node}: {degree}, "
     for nodeTuple in nodeDegrees:
         res += formatString.format(node=nodeTuple[0], degree=nodeTuple[1])
     return res
