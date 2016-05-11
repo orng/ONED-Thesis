@@ -45,7 +45,7 @@ def distanceDictToString(distanceDict):
     output = ""
     if distanceDict == {}:
         return ""
-    valueList = sorted(distanceDict.items(), key=lambda x: x[1], reverse=True)
+    valueList = sorted(distanceDict.items(), key=lambda x: x[1])
     for (k,v) in valueList[:-1]:
         output += fmtStr.format(pair=stringify(k), distance=v)
         output += ", "
