@@ -16,16 +16,6 @@ RESULTFILE = 'result.txt'
 
 def main(threshold, filterType, wordbanks, resultFile=RESULTFILE, useSubBags=False):
     texts = list()
-    #wordbanks = ['articles/fox.jl', 'articles/articles.jl']
-    """wordbanks = [
-            'articles/reuters.jl', 
-            'articles/cbs.jl', 
-            'articles/pbs.jl',
-            #'articles/politico.jl',
-            #'processedLong.jl',
-            #'history.jl',
-            #'ww2.jl',
-        ]"""
     for item in wordbanks:
         texts = loadJson(item, texts)
     texts = sorted(texts, key=lambda d: d['date'])
@@ -87,19 +77,16 @@ def main(threshold, filterType, wordbanks, resultFile=RESULTFILE, useSubBags=Fal
 
 
 def printEnumeration(url, words, enumeration, wordsToFilter, filename):
-    #lineString = u'Url: {url}\nWords: {words}\nOutput: {output}\n\n'
     lineString = u'Url: {url}\nWords: {words}\nNew Words: {newWords}\nNew Pairs: {pairs}\nNodes: {nodes}\nFiltered:{filtered}\n\n\n'
-    #outputStr = outputToString(list(enumeration))
-    newWords = ["".join(x) for x in enumeration if len(x) < 2]
-    #pdb.set_trace()
-    newWords = pre.removeListFromList(wordsToFilter,newWords)
+    newWords = [x for x in enumeration if len(x) < 2]
+    newWords = pre.removeFilterWords(wordsToFilter, newWords)
     pairs = [x for x in enumeration if len(x) == 2]
     pairs = pre.removePairs(wordsToFilter, pairs)
     newWordStr = outputToString(newWords)
     textList = pre.to_wordlist(words)
-    distanceDict = distanceDictFromPairs(pairs, textList)
-    #pairStr = outputToString(pairs)
-    pairStr = distanceDictToString(distanceDict)
+    #distanceDict = distanceDictFromPairs(pairs, textList)
+    #pairStr = distanceDictToString(distanceDict)
+    pairStr = outputToString(pairs)
     nodes, edges = bag.enumerationToGraph(pairs)
     nodeStr = outputToString(list(nodes))
     nodeDegrees = bag.nodeDegrees(edges)

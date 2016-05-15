@@ -201,11 +201,9 @@ class BagTests(unittest.TestCase):
         list1 = [1,2,3]
         list2 = [4,5,6]
         pairs = set([frozenset([a,b]) for (a,b) in zip(list1, list2)])
-        enumeration = set(pairs) # copy of pairs
-        enumeration.add(frozenset([10]))
         expectedNodes = set(list1+list2)
         expectedEdges = pairs
-        nodes, nrOfEdges = bag.enumerationToGraph(enumeration)
+        nodes, nrOfEdges = bag.enumerationToGraph(pairs)
         self.assertEqual(expectedNodes, nodes)
         self.assertEqual(expectedEdges, nrOfEdges)
 

@@ -7,15 +7,18 @@ __author__ = "Orn Gudjonsson"
 from math import log
 from collections import defaultdict
 from stemming.porter2 import stem
+import nltk
 from nltk.corpus import stopwords
 import regex as re
+import string
 
 
-def stem_words(string):
+def stem_words(wordlist):
     """
     Given a string returns a list of all the words, stemmed.
     """
-    return [stem(x.lower()) for x in string.split()]
+    return [stem(x).lower() for x in wordlist]
+    #return [stem(x.lower()) for x in string.split()]
     #return [x.lower() for x in string.split()]
 
 def remove_stopwords(words):
@@ -29,24 +32,29 @@ def remove_duplicates(words):
     return list(set(words))
 
 def remove_punctuation(text):
-        return re.sub(ur"\p{P}+", " ", text)
+    return text.translate(None, string.punctuation)
+    #return re.sub(ur"\p{P}+", " ", text)
 
 def remove_numbers(words):
     return filter(lambda x: not x.isdigit(), words)
 
 def tokenize(text):
+    """
+    Given a string outputs a list of words
+    """
     return nltk.word_tokenize(text)
     
 
 def to_wordlist(text):
     return remove_stopwords(
             stem_words(
+                tokenize(
                 #remove_numbers(
                     remove_punctuation(
-                        text)))#)
+                        text))))#)
 
 def get_sentences(text):
-    return re.split(r' *[\.\?!\n][\'"\)\]]*\s+', text)
+    return nltk.sent_tokenize(text)
 
 def to_wordlist_multi(text):
     sentences = get_sentences(text)
@@ -135,8 +143,8 @@ def filter_tfidf(wordList, dfDict, threshold, n):
     td_idf = 0
     for word in set(wordList):
         df = dfDict[word]
-        if df == 0: 
-            continue
+        #if df == 0: 
+            #continue
         tf = log(tfDict[word] + 1.0, 2)
         idf = log(n+1/(float(df + 0.5)), 2)
         tf_idf = tf*idf
@@ -151,6 +159,16 @@ def filter_tfidf(wordList, dfDict, threshold, n):
 
 def removeListFromList(filterList, wordList):
     return filter(lambda x: x not in filterList, wordList)
+
+def removeFilterWords(filterList, wordList):
+    """
+    input: 
+        filterList: ['foo', 'baz']
+        wordList: [frozenset(['foo']), frozenset(['bar'])]
+    output: ['bar']
+    """
+    words = [y for x in wordList for y in x]
+    return removeListFromList(filterList, words)
 
 def removePairs(filterList, pairList):
     return filter(lambda s: not isSetItemInList(filterList, s), pairList)

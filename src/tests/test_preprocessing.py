@@ -19,15 +19,15 @@ class PreprocessingTests(unittest.TestCase):
 
     def test_remove_punctuation(self):
         string = "Great... wtf? ffs!"
-        expected = "Great  wtf  ffs "
+        expected = "Great wtf ffs"
         result = pre.remove_punctuation(string)
         self.assertEqual(expected, result)
 
     def test_stem_words(self):
-        string = "The horizontal dogs are chewing the puppies"
+        words = ['The', 'horizontal', 'dogs', 'are', 'chewing', 'the', 'puppies']
         expected = ['the', 'horizont', 'dog', 'are', 'chew', 'the', 'puppi']
-        result = pre.stem_words(string)
-        self.assertNotEqual(string.lower(), " ".join(result))
+        result = pre.stem_words(words)
+        self.assertNotEqual(words, result)
         self.assertEqual(expected, result)
 
     def test_stopwords(self):
@@ -77,7 +77,7 @@ class PreprocessingTests(unittest.TestCase):
         #df = pre.document_frequency(d2, df)
         #expected = ['cat', 'cat', 'cat']
         expected = ['dog']
-        result = pre.filter_tfidf(d2, df, 0.9, 2)
+        result = pre.filter_tfidf(d2, df, 1, 2)
         self.assertEqual(expected, result)
 
 
@@ -119,10 +119,10 @@ class PreprocessingTests(unittest.TestCase):
         
 
     def test_get_sentences(self):
-        s1 = "This is first"
-        s2 = "This is second"
-        s3 = "Third has A.B.B.A"
-        text = ". ".join([s1, s2, s3])
+        s1 = "This is first."
+        s2 = "This is second."
+        s3 = "Third has A.B.B.A."
+        text = " ".join([s1, s2, s3])
         expected = [s1, s2, s3]
         result = pre.get_sentences(text)
         self.assertEqual(expected, result)
@@ -138,6 +138,13 @@ class PreprocessingTests(unittest.TestCase):
         targets = [2,4,6,8]
         expected = [1,3,5,7]
         result = pre.removeListFromList(targets, source)
+        self.assertEqual(expected, result)
+
+    def test_removeFilterWords(self):
+        source = [frozenset([1]), frozenset([2]), frozenset([3])]
+        targets = [1,3]
+        expected = [2]
+        result = pre.removeFilterWords(targets, source)
         self.assertEqual(expected, result)
 
     def test_flattenPairSet(self):
