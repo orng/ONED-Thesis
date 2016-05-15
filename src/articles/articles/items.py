@@ -12,7 +12,7 @@ import scrapy
 class ArticleItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    #title = scrapy.Field()
+    title = scrapy.Field()
     text = scrapy.Field()
     date = scrapy.Field()
     url = scrapy.Field()
