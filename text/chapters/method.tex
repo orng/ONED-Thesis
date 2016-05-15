@@ -1,6 +1,6 @@
 \chapter{Method}
 \label{chapter:method}
-On-line new event detection is hard~\cite{allan2000hard}. In this chapter we present a new method for ONED based around the concept of \emph{minimal new pairs}. We will explain the rationale behind the idea, give a detailed explanation of the base algorithm and discuss some of the approaches we have examined for expanding upon the base idea.
+On-line new event detection is hard~\cite{allan2000hard}. In this chapter we present a new method for ONED based around the concept of \emph{minimal new pairs}. We explain the rationale behind the idea, give a detailed explanation of the base algorithm and discuss some of the approaches we have examined for expanding upon the base idea.
 
 
 \section{The basic idea}
@@ -13,11 +13,11 @@ In more formal terms, Damaschke~\cite{damaschke2015pairs} presents the definitio
   Let $B_0, B_1, B_2...B_{m-1}$ be a sequence of sets that we call bags. For another bag $B:=B_{m}$ we call a subset $X \subseteq B$ new at $m$, if $X$ was not already a subset of an earlier bag : $\forall i < m : X \setminus B_{i} \neq \emptyset$. Otherwise $X$ is said to be old at $m$. We call $X \subseteq B$ minimal new at $m$ if $X$ is new and also minimal (with respect to inclusion) with this property.
 \end{definition}
 
-Thus, to continue with our previous example $\{prince, dead\}$ would likely be a minimal new set for the first article reporting the tragic event of Prince's death.
+Thus, to continue with our previous example, if we tokenize incoming news articles into bags of words, then $\{prince, dead\}$ would likely be a minimal new set for the first article reporting the tragic event of Prince's death.
 
-A first, naive approach could be to simply the detection of new events on the existence of minimal sets below a given set size $n$. For example, if we choose $n=3$ we would say that if an article contains new words or new pairs of old words it contains an new event, otherwise it does not. This naive approach does not work well in practice however since articles covering the same event are quite likely to contain new words or new pairs and thus this method is likely to falsely flag articles as containing new events.
+A first, naive approach could be to simply base the detection of new events on the existence of minimal sets below a given set size $k$. For example, if we choose $k=3$ we would say that if an article contains new words or new pairs of old words it contains an new event, otherwise it does not. This naive approach does not work well in practice however since articles covering the same event are quite likely to contain new words or new pairs and thus this method is likely to falsely flag articles as containing new events.
 
-In stead of blindly flagging articles based on the existence of minimal sets we propose a method which automatically highlights and presents important informative word combinations by certain quantitative criteria such that the user can then quickly browse them and see which of them raise interest. This introduces the problem of having to prioritize the minimal sets identified for any incoming article.
+Instead of blindly flagging articles based on the existence of minimal sets we propose a method which automatically highlights and presents important informative word combinations by certain quantitative criteria such that the user can then quickly browse them and see which of them raise interest. This introduces the problem of having to prioritize the minimal sets identified for any incoming article.
 
 \section{Enumeration}
 TODO: explain Damaschke's enumeration algorithm as the basis for our method.
@@ -26,7 +26,7 @@ TODO: explain Damaschke's enumeration algorithm as the basis for our method.
 Prior to extracting the minimal sets from an article the article must be preprocessed so that we can digest it. For our enumeration algorithm [TODO: ``enumeration'' is explained in Damaschke2015 but we must also explain it here before we talk about it] we treat articles as sets of words, \emph{bags}, and therefore we must pre-process any article that we receive as input before we can enumerate it and apply any of our methods. We tokenize the input articles, remove stopwords and punctuation and stem the tokenized words using the English porter2 stemmer provided by the NLTK. [TODO: add citation for NLTK and porter2]
 
 \section{Approaches}
-As explained in section~\ref{section:idea} we have to filter out or select from the minimal sets that we identify within incoming articles in order to be able to present the informative sets that are likely to be indicative of a new event. In this section we will discuss the approaches we examined in order to try to accomplish this: filtering common or unimportant words, prioritizing words that occur in many minimal new pairs, prioritize words that appear with close proximity [TODO: more approaches].
+As explained in section~\ref{section:idea} we have to filter out or select from the minimal sets that we identify within incoming articles in order to be able to present the informative sets that are likely to be indicative of a new event. In this section we will discuss the approaches we examined in order to try to accomplish this: filtering common or unimportant words, prioritizing words that occur in many minimal new pairs, prioritize words that appear with close proximity [TODO: more approaches, more details and complexity analysis].
 
 \subsection{Filtering common or unimportant words}
 Words which describe a new event are likely to be relatively unique to that event. Reversely, words which are common over multiple different articles are likely to not be descriptive for new specific events. [TODO: citation?] Similarly, words which are common within an article are likely to be important for that article. Thus, we suggest filtering out words that are common within the previously seen articles, or words which can be determined not to be important within the incoming article. Thus we can filter based on \emph{collection frequency}: how often a given word has appeared within the accumulated corpus; \emph{document frequency}: the number of documents in which a given word has previously appeared; the \emph{TF-IDF} score: a score indicating the importance of a word within the given article with relation to how common it is within the corpus.

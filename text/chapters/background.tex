@@ -1,22 +1,22 @@
 \chapter{Background}
 \label{chapter:background}
 
-The task of detecting new events within a stream of documents can be separated into two camps: \emph{Retrospective Event Detection} focuses on discovering previously unidentified events from a finite collection of articles~\cite{yang1998study}. \emph{On-line New Event Detection} (ONED), which is sometimes known as either simply \emph{New Event Detection} (NED) or \emph{First Story Detection} (FSD), instead deals with the problem as trying to identify new events in real-time as soon as they are arrive from live news feeds.
+The task of detecting new events within a stream of documents can be separated into two camps \emph{Retrospective Event Detection} and \emph{On-line New Event Detection}.Retrospective Event Detection focuses on discovering previously unidentified events from a finite collection of articles~\cite{yang1998study}. On-line New Event Detection (ONED), which is sometimes known as either simply \emph{New Event Detection} (NED) or \emph{First Story Detection} (FSD), instead deals with the problem by trying to identify new events in real-time as soon as they are arrive from live news feeds.
 
-On-line New Event Detection has seen much development in the past 15 years as it has been one of the topics covered by the \emph{Topic Detection and Tracking}(TDT) research program (TODO:missing citation). In this chapter we will present a brief overview of techniques used for ONED by other researchers within the field.
+On-line New Event Detection has seen much development in the past 15 years as it has been one of the topics covered by the \emph{Topic Detection and Tracking}(TDT) research program (TODO:missing citation). In this chapter we will present a brief overview of the techniques used for ONED by other researchers within the field.
 
 \section{What are events?}
 The concept of events in daily speech can be somewhat ambiguous~\cite{papka1999online} and in order for us to reason about events it is important that we specify what we mean. "The United States invade Vietnam" could be considered an event but at the same time the whole Vietnam War could be considered an event. We use TDT's definition of events: An event is ``a particular thing that happens at a specific time and place, along with all necessary preconditions and unavoidable consequences''. [TODO: cite https://catalog.ldc.upenn.edu/docs/LDC2006T19/TDT2004V1.2.pdf]
 [TODO: elaborate]
 
 \section{Related works}
-A classical approach to ONED is to represent documents as term vectors where each term within a document is weighted using some metric, typically TF-IDF (term frequency-inverse document frequency)[TODO: citation] which are then compared in some way to the previously seen documents.
+A classical approach to ONED is to represent documents as term vectors where each term within a document is weighted using some metric, typically TF-IDF (term frequency-inverse document frequency)[TODO: citation], which are then compared in some way to the vector representations of previously seen documents.
 
 Papka, Allan and Lavrenko~\cite{papka1998online} use a single-pass clustering technique where feature extraction and selection techniques are used to build query representations of all stories. They then compare any incoming document to the previously seen queries and flagging the document as new if it's comparison score exceeds a threshold which is calculated for each document.
 
-Yang, Pierce and Carbonell~\cite{yang1998study} also use a single-pass clustering algorithm and incremental IDF for TF-IDF weighting: IDF is first trained on a dataset an then updated for each document. In order to increase efficiency and due to the temporal nature of events they use a sliding time-window to only compare incoming documents to stories within the time window. Additionally they also present results of applying decay weighting where documents further away in time are marked as less important.
+Yang, Pierce and Carbonell~\cite{yang1998study} also use a single-pass clustering algorithm and incremental IDF for TF-IDF weighting: IDF is first trained on a dataset an then updated for each document. In order to increase efficiency and due to the temporal nature of events they use a sliding time-window to only compare incoming documents to stories within the time window. Additionally they also examine decay weighting where documents further away in time are marked as less important.
 
-Brants, Chen and Farahat~\cite{brants2003system} use a source-specific TF-IDF model where the enews stream is comprised out of multiple sources and certain words are more common depending on the source. Each incoming document is weighted and compared to previously seen documents using either Hellinger- or cosine-distance but normalized by subtracting the average distance of current document to all other documents. [TODO: more stuff that they do]
+Brants, Chen and Farahat~\cite{brants2003system} use a source-specific TF-IDF model where the news stream is comprised out of multiple sources and certain words are more common depending on the source. Each incoming document is weighted and compared to previously seen documents using either Hellinger- or cosine-distance but normalized by subtracting the average distance of the current document to all other documents. [TODO: more stuff that they do]
 
 Another popular approach is to represent documents using named entities. The intuition being that events can be summarized  by ``what'', ``where'', ``when'' and ``how'' and other similar properties. [TODO: citation]
 
@@ -30,4 +30,4 @@ Kumaran and Allan~\cite{kumaran2005using} use named entities in addition to term
 
 Petrovic, Osborne and Lavrenko~\cite{petrovic2012using} paraphrase incoming articles and use locality-sensitive hashing for comparisons. 
 
-Wurzer, Lavrenko and Osborne~\cite{wurzer2015kterm} present a constant time/space algorithm for ONED. Their approach is based around finding set of up to $k$ terms for incoming documents and estimating novelty as the proportion of such sets that have not appeared before. 
+Wurzer, Lavrenko and Osborne~\cite{wurzer2015kterm} present a constant time/space algorithm for ONED. Their approach is based around finding sets of up to $k$ terms for incoming documents and estimating novelty as the proportion of such sets that have not appeared before. 
