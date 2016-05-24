@@ -32,7 +32,15 @@ def remove_duplicates(words):
     return list(set(words))
 
 def remove_punctuation(text):
-    return text.translate(None, string.punctuation)
+    """
+    Input:
+        unicode text
+    Ouput:
+        unicode text with removed punctuation
+    """
+    table = {ord(c): u'' for c in string.punctuation}
+    return text.translate(table)
+    #return text.translate(None, string.punctuation)
     #return re.sub(ur"\p{P}+", " ", text)
 
 def remove_numbers(words):

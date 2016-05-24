@@ -18,8 +18,8 @@ class PreprocessingTests(unittest.TestCase):
         self.assertEqual(expected, result)
 
     def test_remove_punctuation(self):
-        string = "Great... wtf? ffs!"
-        expected = "Great wtf ffs"
+        string = u"Great... wtf? ffs!"
+        expected = u"Great wtf ffs"
         result = pre.remove_punctuation(string)
         self.assertEqual(expected, result)
 
@@ -119,16 +119,16 @@ class PreprocessingTests(unittest.TestCase):
         
 
     def test_get_sentences(self):
-        s1 = "This is first."
-        s2 = "This is second."
-        s3 = "Third has A.B.B.A."
+        s1 = u"This is first."
+        s2 = u"This is second."
+        s3 = u"Third has A.B.B.A."
         text = " ".join([s1, s2, s3])
         expected = [s1, s2, s3]
         result = pre.get_sentences(text)
         self.assertEqual(expected, result)
     
     def test_to_wordlist_multi(self):
-        text = "Cat dog. Dog cow."
+        text = u"Cat dog. Dog cow."
         expected = [('cat', 'dog'), ('dog', 'cow')]
         result = pre.to_wordlist_multi(text)
         self.assertEqual(expected, result)
