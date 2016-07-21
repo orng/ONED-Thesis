@@ -1,5 +1,6 @@
 # Project specific
 src/results
+src/*.txt
 text/build
 text/aux
 
@@ -70,3 +71,4 @@ target/
 *~
 *.swo
 *.swp
+*.swn
