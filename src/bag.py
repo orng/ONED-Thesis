@@ -23,12 +23,14 @@ def getSubsets(x, n):
                 subsets.append(subset)
     return frozenset(subsets)
 
+
 def f(x, bags):
     i = 1
     for bag in bags:
         if isSubset(x, bag):
             return i
         i = i+1
+
 
 def isNewAtM(x, bags, bagDict, m):
     if bagDict.get(x, inf) < m:
@@ -51,11 +53,13 @@ def isNewAtM(x, bags, bagDict, m):
 def isSubset(a,b):
     return a-b == set([])
 
+
 def isMultiSubset(a,b):
     for subbag in b:
         if a-subbag == set([]):
             return True
     return False
+
 
 def enumerateBagHelper(newBag, bags, bagDict, n, i):
     newSets = []
@@ -66,6 +70,7 @@ def enumerateBagHelper(newBag, bags, bagDict, n, i):
             #i = f(subset, enumeratedBags) if i is not None
             bagDict[subset] = i
     return set(newSets)
+
 
 def enumerateBag(newBag, bags, bagDict):
     """
@@ -89,6 +94,7 @@ def enumerateBag(newBag, bags, bagDict):
             break
     return (enumeration, bagDict)
 
+
 def enumerateMultiBag(newBags, bags, bagDict):
     enumeration = set([])
     #Store the isSubset function in variable and replace it in module
@@ -106,6 +112,7 @@ def enumerateMultiBag(newBags, bags, bagDict):
         globals()['isSubset'] = tempIsSubset
     return (enumeration, bagDict)
 
+
 def enumerate(bags):
     """
     Enumerates a list of 'bags'
@@ -119,6 +126,7 @@ def enumerate(bags):
         i = i+1
     return enumeratedBags, bagDict
 
+
 def enumerationToGraph(pairs):
     """Given an enumeration (a set of frozensets with one or two elements)
     returns the set of nodes (words involved in pairs) and the set of edges
@@ -130,6 +138,7 @@ def enumerationToGraph(pairs):
         for elem in pair:
             nodes.add(elem)
     return nodes, set(pairs)
+
 
 def nodeDegrees(edges):
     """

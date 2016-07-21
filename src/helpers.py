@@ -3,6 +3,9 @@
 import json
 import sys
 
+import preprocessing as pre
+import bag
+
 def loadJson(filename, texts):
     """
     load the given json lines file and return an array of whatever the lines 
@@ -96,3 +99,78 @@ def calculateWordDistance(word1, word2, textList):
             dist = abs(i1-i2)
             minDist = min(dist, minDist)
     return minDist
+
+def enumerationToJsonable(enumeration):
+    """
+    Turns an enumeration set into datatypes that can be serialized
+    Input:
+        enumeration: set([frozenset['newWord'], frozenset([frozenset(['new']), frozenset(['pair'])])])
+    Output:
+        [(newWord,), ('new', 'pair')]
+    """
+    retval = []
+    for item in enumeration:
+        if len(item) > 1:
+            newItem = [tuple(x) for x in item]
+        else:
+            newItem = tuple(item)
+        retval.append(newItem)
+    return retval
+
+
+def printEnumerationJson(enumList, filename):
+    """
+    Input: 
+        enumList: [{k:v, },]
+        filename: /some/file.txt
+    Output: None, prints each item as jsonline to filename
+    """
+    with open(filename, 'w') as f:
+        for enumeration in enumList:
+            enum = list(enumeration['enumeration'])
+            enum = enumerationToJsonable(enum)
+            enumeration['enumeration'] = enum
+            jsonString = json.dumps(enumeration)
+            f.write(jsonString+'\n')
+
+def printEnumeration(url, words, enumeration, filename):
+    enumerationString = enumerationToString(url, words, enumeration)
+    with open(filename, 'a') as f:
+        f.write(enumerationString)
+
+def printEnumerationThreaded(url, words, enumeration, fileobject):
+    enumerationString = enumerationToString(url, words, enumeration)
+    fileobject.write(enumerationString)
+
+def enumerationToString(url, words, enumeration):
+    lineString = u'Url: {url}\nWords: {words}\nNew Words: {newWords}\nNew Pairs: {pairs}\nNodes: {nodes}\n\n\n'
+    newWords = [x for x in enumeration if len(x) < 2]
+    pairs = [x for x in enumeration if len(x) == 2]
+    newWordStr = outputToString(newWords)
+    textList = pre.to_wordlist(words)
+    #distanceDict = distanceDictFromPairs(pairs, textList)
+    #pairStr = distanceDictToString(distanceDict)
+    pairStr = outputToString(pairs)
+    nodes, edges = bag.enumerationToGraph(pairs)
+    nodeStr = outputToString(list(nodes))
+    nodeDegrees = bag.nodeDegrees(edges)
+    nodeDegreeStr = nodeDegreesToString(nodeDegrees)
+    lineString = lineString.format(
+            url=url,
+            words=words,
+            #output=outputStr,
+            newWords=newWordStr,
+            pairs=pairStr,
+            #nodes=nodeStr,
+            nodes=nodeDegreeStr,
+            #edges=len(edges),
+            #filtered=wordsToFilter,
+        )
+    return lineString.encode('UTF-8')
+    """
+    with open('edges.csv', 'a') as f:
+        edges = [tuple(edge) for edge in edges]
+        for edge in edges:
+            f.write(list(edge[0])[0] + "," +list(edge[1])[0] +"\n")
+    """
+
