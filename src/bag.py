@@ -54,13 +54,6 @@ def isSubset(a,b):
     return a-b == set([])
 
 
-def isMultiSubset(a,b):
-    for subbag in b:
-        if a-subbag == set([]):
-            return True
-    return False
-
-
 def enumerateBagHelper(newBag, bags, bagDict, n, i):
     newSets = []
     subsets = getSubsets(newBag, n)
@@ -97,19 +90,12 @@ def enumerateBag(newBag, bags, bagDict):
 
 def enumerateMultiBag(newBags, bags, bagDict):
     enumeration = set([])
-    #Store the isSubset function in variable and replace it in module
-    tempIsSubset = globals()['isSubset']
-    globals()['isSubset'] = isMultiSubset
-    try:
-        for n in range(1,3):
-            for subBag in newBags:
-                enumeration = enumeration | enumerateBagHelper(subBag, bags, bagDict, n, len(bags) + 1)
-            newBags = [getSubsets(x, n) - enumeration for x in newBags]
-            if newBags == set([]):
-                break
-    finally:
-        #Restore isSubset
-        globals()['isSubset'] = tempIsSubset
+    for n in range(1,3):
+        for subBag in newBags:
+            enumeration = enumeration | enumerateBagHelper(subBag, bags, bagDict, n, len(bags) + 1)
+        newBags = [getSubsets(x, n) - enumeration for x in newBags]
+        if newBags == set([]):
+            break
     return (enumeration, bagDict)
 
 

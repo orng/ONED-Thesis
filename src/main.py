@@ -31,9 +31,15 @@ def loadWordbanks(wordbanks):
     return sorted(texts, key=lambda d: d['date'])[:300]#TODO: remove 300 limit
 
 def textWithTitle(textItem):
+    """
+    Combines the title and text of textItem
+    """
     return u"{title}\n{text}".format(title=textItem['title'], text=textItem['text'])
 
-def enumerateTexts(texts, threshold, filterType, resultFile,useSubBags=False):
+def enumerateTexts(texts, threshold, filterType, resultFile, useSubBags=False):
+    """
+    Enumerate the texts and print the results to resultFile.
+    """
     words = []
     enumeratedBags = []
     bagDict = {}
@@ -52,29 +58,35 @@ def enumerateTexts(texts, threshold, filterType, resultFile,useSubBags=False):
         sys.stdout.flush()
         sys.stdout.write("\r")
 
-        words = pre.preprocess(textWithTitle(text))
-        wordsToFilter, wordFrequency = filters.filterWordList(words, wordFrequency, filterType, threshold, i)
-
         if useSubBags:
-            words = pre.to_wordlist_multi(text['text'])
-        words = set(words)
+            subBagList = pre.to_wordlist_multi(textWithTitle(text))
+            flatWords = [y for x in subBagList for y in x]
+            wordsToFilter, wordFrequency, tfidfList = filters.filterWordList(flatWords, wordFrequency, filterType, threshold, i)
+            flatWords = set(flatWords)
+            words = [set(x) for x in subBagList]
+        else:
+            words = pre.preprocess(textWithTitle(text))
+            wordsToFilter, wordFrequency, tfidfList = filters.filterWordList(words, wordFrequency, filterType, threshold, i)
+            flatWords = set(words)
+
         if useSubBags:
             enumeration, bagDict = bag.enumerateMultiBag(words, enumeratedBags, bagDict)
         else:
-            enumeration, bagDict = bag.enumerateBag(words, enumeratedBags, bagDict)
+            enumeration, bagDict = bag.enumerateBag(flatWords, enumeratedBags, bagDict)
 
-        filteredEnumeration = filters.filter_enumeration(enumeration, wordsToFilter)
+        filteredEnumeration = filters.filter_enumeration(enumeration, wordsToFilter, tfidfList)
         textCopy = dict(text)
         textCopy['enumeration'] = filteredEnumeration
         #enumerations.append(textCopy)
-        printEnumerationThreaded(
+        printEnumerationToFileObject(
             text['url'],
             textWithTitle(text),
             filteredEnumeration,
-            resultFileObject
+            resultFileObject,
+            tfidfList
         )
 
-        enumeratedBags.append(bag.getSubsets(words, 1))
+        enumeratedBags.append(bag.getSubsets(flatWords, 1))
         if filteredEnumeration == set([]):
             old.append(text['url'])
 
@@ -93,51 +105,14 @@ def main(threshold, filterType, wordbanks, resultFile=RESULTFILE, useSubBags=Fal
     """
     texts = loadWordbanks(wordbanks)
 
-    #empty result file
-    with open(resultFile, 'w'):
-        pass
+    #replace result file contents with header
+    with open(resultFile, 'w') as f:
+        s = "Initializing run\nInputFiles: {input}\nFilter: {filter}\nThreshold: {threshold}\n=======================================\n"
+        f.write(s.format(s, input=wordbanks, filter=filterType, threshold=threshold))
+
 
     enumerations, old = enumerateTexts(texts, threshold, filterType, resultFile, useSubBags)
     #printEnumerationJson(enumerations, resultFile)
-
-
-"""
-def printEnumeration(url, words, enumeration, wordsToFilter, filename):
-    lineString = u'Url: {url}\nWords: {words}\nNew Words: {newWords}\nNew Pairs: {pairs}\nNodes: {nodes}\nFiltered:{filtered}\n\n\n'
-    newWords = [x for x in enumeration if len(x) < 2]
-    newWords = pre.removeFilterWords(wordsToFilter, newWords)
-    pairs = [x for x in enumeration if len(x) == 2]
-    pairs = pre.removePairs(wordsToFilter, pairs)
-    newWordStr = outputToString(newWords)
-    textList = pre.to_wordlist(words)
-    #distanceDict = distanceDictFromPairs(pairs, textList)
-    #pairStr = distanceDictToString(distanceDict)
-    pairStr = outputToString(pairs)
-    nodes, edges = bag.enumerationToGraph(pairs)
-    nodeStr = outputToString(list(nodes))
-    nodeDegrees = bag.nodeDegrees(edges)
-    nodeDegreeStr = nodeDegreesToString(nodeDegrees)
-    with open(filename, 'a') as f:
-        lineString = lineString.format(
-                url=url,
-                words=words,
-                #output=outputStr,
-                newWords=newWordStr,
-                pairs=pairStr,
-                #nodes=nodeStr,
-                nodes=nodeDegreeStr,
-                #edges=len(edges),
-                filtered=wordsToFilter,
-            )
-        f.write(lineString.encode('UTF-8'))
-
-    '''
-    with open('edges.csv', 'a') as f:
-        edges = [tuple(edge) for edge in edges]
-        for edge in edges:
-            f.write(list(edge[0])[0] + "," +list(edge[1])[0] +"\n")
-    '''
-"""
 
 
 def massRun():
@@ -156,18 +131,18 @@ def massRun():
                 main(t, f, articles, filename, False)
                 if f=='none':
                     break
-
     
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Process the provided data")
     parser.add_argument('-m', '--massRun', action='store_true')
     parser.add_argument('-s', '--subBags', action='store_true')
-    parser.add_argument('-t', '--threshold', type=float, default=0.10)
+    parser.add_argument('-t', '--threshold', type=float, default=10)
     parser.add_argument('-f', '--filter', default='none')
     parser.add_argument('-o', '--output', default=RESULTFILE)
     parser.add_argument('articles', nargs='*')
     args = parser.parse_args()
+
     if args.massRun:
         massRun()
     else:

@@ -21,6 +21,7 @@ def filterWordList(words, wordFrequency, filterType, threshold, docuCount):
             wordFrequency: updated dictionary with document frequencies
     """
     wordsToFilter = []
+    tfidfList = []
     if filterType == 'cf':
         wordsToFilter = filter_common(words, wordFrequency, threshold)
         wordFrequency  = collection_frequency(words, wordFrequency)
@@ -28,22 +29,42 @@ def filterWordList(words, wordFrequency, filterType, threshold, docuCount):
         wordsToFilter = filter_overThreshold(words, wordFrequency, threshold, docuCount-1)
         wordFrequency = document_frequency(words, wordFrequency)
     elif filterType == 'tfidf':
-        wordsToFilter = filter_tfidf(words, wordFrequency, threshold, docuCount)
+        wordsToFilter, tfidfList = filter_tfidf(words, wordFrequency, threshold, docuCount)
         wordFrequency = document_frequency(words, wordFrequency)
     elif filterType == 'none':
-        pass
+        wordsToFilter, tfidfList = filter_tfidf(words, wordFrequency, -10.0, docuCount)
+        wordFrequency = document_frequency(words, wordFrequency)
     else:
         raise Exception("Invalid filter type" + filterType)
 
-    return wordsToFilter, wordFrequency
+    return wordsToFilter, wordFrequency, tfidfList
 
-def filter_enumeration(enumeration, whitelist):
+def filter_enumeration(enumeration, whitelist, tfidfList):
     words = [x for x in enumeration if len(x) == 1]
     pairs = [x for x in enumeration if len(x) > 1]
     retWords = removeWords(whitelist, words)
     retPairs = removePairs(whitelist, pairs)
+    retPairs = filter_pairs_tfidf(retPairs, tfidfList)
     return retWords + retPairs
 
+def pair_tfidf(pair, tfidfDict):
+    pairList = list(pair)
+    first = list(pairList[0])[0]
+    second = list(pairList[1])[0]
+    tfidf = tfidfDict[first] + tfidfDict[second]
+    return tfidf
+
+#TODO/Note: tests indicate that we need to train like 10 articles first, 
+# investigate further and include in report maybe?
+def filter_pairs_tfidf(pairs, tfidfList):
+    return pairs #TODO: remove this temporary line
+    tfidfDict = {x: y for (x,y) in tfidfList}
+    retPairs = []
+    for pair in pairs:
+        tfidf = pair_tfidf(pair, tfidfDict)
+        if(tfidf >= 0.5): #TODO: magic number!
+            retPairs.append(pair)
+    return retPairs
 
 def document_frequency(wordList, docFreqDict):
     """
@@ -122,8 +143,8 @@ def tfidf(word, termFrequencies, docFrequencies, docNumber):
         the tf-idf of word, i.e. 0.4
     """
     df = docFrequencies[word]
-    tf = log(termFrequencies[word] + 1.0, 2)
-    idf = log(docNumber+1/(float(df + 0.5)), 2)
+    tf = termFrequencies[word]
+    idf = log(docNumber+1/(float(df+1)))
     return tf*idf
 
 
@@ -135,24 +156,14 @@ def filter_tfidf(wordList, dfDict, threshold, n):
     n is the number of documents
     """
     tfDict = term_frequency(wordList)
-    itemsToFilter = []
+    tfidfTuples = []
     td_idf = 0
     for word in set(wordList):
-        df = dfDict[word]
-        #if df == 0: 
-            #continue
-        tf = log(tfDict[word] + 1.0, 2)
-        idf = log(n+1/(float(df + 0.5)), 2)
-        #tf_idf = tfidf(word, tfDict, dfDict, n)
-        tf_idf = tf*idf
-        #if tf_idf < threshold:
-            #itemsToFilter.append(word)
-        itemsToFilter.append((word, tf_idf))
-    sortedItems = sorted(itemsToFilter, key=lambda x: x[1], reverse=True)
-    #print sortedItems[:int(threshold)]
+        tf_idf = tfidf(word, tfDict, dfDict, n)
+        tfidfTuples.append((word, tf_idf))
+    sortedItems = sorted(tfidfTuples, key=lambda x: x[1], reverse=True)
     wordsToFilter = [x[0] for x in sortedItems[:int(threshold)]]
-    return wordsToFilter
-    #return removeListFromList(itemsToFilter, wordList)
+    return wordsToFilter, tfidfTuples 
 
 
 def removeListFromList(filterList, wordList):

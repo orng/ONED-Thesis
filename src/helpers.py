@@ -55,6 +55,24 @@ def distanceDictToString(distanceDict):
     output += fmtStr.format(pair=stringify(valueList[-1][0]), distance=valueList[-1][1])
     return output
 
+def frozenPairToTuple(pair):
+    pairList = list(pair)
+    first = list(pairList[0])[0]
+    second = list(pairList[1])[0]
+    return (first, second)
+
+
+def tfidfPairsToString(pairs, tfidfDict):
+    if len(pairs) == 0:
+        return "{}"
+    retString = ""
+    fmtString = u"{pair}: {tfidf}, "
+    for pair in sorted(pairs, key=lambda x: list(x)[1]):
+        p = frozenPairToTuple(pair)
+        tfidf = tfidfDict[p[0]] + tfidfDict[p[1]]
+        retString += fmtString.format(pair=stringify(pair), tfidf=tfidf)
+    return retString
+
 
 def nodeDegreesToString(nodeDegrees):
     res = ""
@@ -138,39 +156,32 @@ def printEnumeration(url, words, enumeration, filename):
     with open(filename, 'a') as f:
         f.write(enumerationString)
 
-def printEnumerationThreaded(url, words, enumeration, fileobject):
-    enumerationString = enumerationToString(url, words, enumeration)
+def printEnumerationToFileObject(url, words, enumeration, fileobject, tfidfList):
+    enumerationString = enumerationToString(url, words, enumeration, tfidfList)
     fileobject.write(enumerationString)
 
-def enumerationToString(url, words, enumeration):
-    lineString = u'Url: {url}\nWords: {words}\nNew Words: {newWords}\nNew Pairs: {pairs}\nNodes: {nodes}\n\n\n'
+
+def enumerationToString(url, words, enumeration, tfidfList):
+    lineString = u'Url: {url}\nWords: {words}\nNew Words: {newWords}\nNew Pairs: {pairs}\nNodes: {nodes}\n\n\n'#TF-IDF: {tfidf}\n\n\n================================\n'
     newWords = [x for x in enumeration if len(x) < 2]
     pairs = [x for x in enumeration if len(x) == 2]
+    tfidfDict = {x: y for (x,y) in tfidfList}
+    newWords = sorted(newWords, key=lambda frozenWord: -tfidfDict[list(frozenWord)[0]])
+    pairs = sorted(pairs, key=lambda frozenPair: -sum(tfidfDict[x] for x in frozenPairToTuple(frozenPair)))
     newWordStr = outputToString(newWords)
     textList = pre.to_wordlist(words)
-    #distanceDict = distanceDictFromPairs(pairs, textList)
-    #pairStr = distanceDictToString(distanceDict)
     pairStr = outputToString(pairs)
     nodes, edges = bag.enumerationToGraph(pairs)
-    nodeStr = outputToString(list(nodes))
     nodeDegrees = bag.nodeDegrees(edges)
     nodeDegreeStr = nodeDegreesToString(nodeDegrees)
+    #tfidfPairs = tfidfPairsToString(pairs, tfidfDict)
     lineString = lineString.format(
             url=url,
             words=words,
-            #output=outputStr,
             newWords=newWordStr,
             pairs=pairStr,
-            #nodes=nodeStr,
             nodes=nodeDegreeStr,
-            #edges=len(edges),
-            #filtered=wordsToFilter,
+            #tfidf=tfidfPairs
         )
     return lineString.encode('UTF-8')
-    """
-    with open('edges.csv', 'a') as f:
-        edges = [tuple(edge) for edge in edges]
-        for edge in edges:
-            f.write(list(edge[0])[0] + "," +list(edge[1])[0] +"\n")
-    """
 

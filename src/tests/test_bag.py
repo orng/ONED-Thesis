@@ -177,9 +177,7 @@ class BagTests(unittest.TestCase):
         words = [['dog', 'cat'], ['cat', 'chicken']]
         oldBags = [
                 set([
-                    frozenset([
-                        frozenset(['cat'])
-                    ])
+                    frozenset(['cat'])
                 ])]
         oldDict = {frozenset(['cat']): 1}
 
@@ -193,6 +191,38 @@ class BagTests(unittest.TestCase):
         self.assertEqual(expectedEnum, enumeration)
         self.assertEqual(expectedDict, bagDict)
 
+    def test_enumerateMultiBag_sameNewWordInSubBags(self):
+        """
+        Test when a word is new in the article but appears in more than one subbag
+        """
+        words = [['dog', 'cat', 'cow'], ['dog', 'chicken']]
+        oldBags = [
+            set([frozenset(['cat'])]),
+            set([frozenset(['dog'])])
+        ]
+        oldDict = {
+            frozenset(['cat']): 1,
+            frozenset(['dog']): 2,
+        }
+
+        expectedEnum = set([
+            frozenset([frozenset(['dog']), frozenset(['cat'])]),
+            frozenset(['chicken']),
+            frozenset(['cow'])
+        ])
+        expectedDict = {
+                        frozenset(['cat']): 1,
+                        frozenset(['dog']): 2,
+                        frozenset(['chicken']): 3,
+                        frozenset(['cow']): 3,
+                        frozenset([
+                            frozenset(['cat']),
+                            frozenset(['dog']),
+                        ]) : 3
+                    }
+        enumeration, bagDict = bag.enumerateMultiBag(words, oldBags, oldDict)
+        self.assertEqual(expectedEnum, enumeration)
+        self.assertEqual(expectedDict, bagDict)
         
 
     def test_enumrationToGraph(self):

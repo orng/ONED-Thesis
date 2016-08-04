@@ -43,14 +43,21 @@ class FiltersTests(unittest.TestCase):
         r2 = filters.collection_frequency(d2, r1)
         self.assertEqual(expected, r2)
 
+    def test_tfidf(self):
+        d1 = ['dog']
+        d2 = ['dog', 'cat', 'cat', 'cat']
+        df = filters.document_frequency(d1, defaultdict(int))
+        tf = filters.collection_frequency(d2, defaultdict(int))
+        expected = 3.295836866004329
+        result = filters.tfidf('cat', tf, df, 2)
+        self.assertEqual(expected, result)
+
     def test_filter_tfidf(self):
         d1 = ['dog']
         d2 = ['dog', 'cat', 'cat', 'cat']
         df = filters.document_frequency(d1, defaultdict(int))
-        #df = filters.document_frequency(d2, df)
-        #expected = ['cat', 'cat', 'cat']
         expected = ['cat']
-        result = filters.filter_tfidf(d2, df, 1, 2)
+        result, tfidfList = filters.filter_tfidf(d2, df, 1, 2)
         self.assertEqual(expected, result)
 
 
@@ -163,7 +170,8 @@ class FiltersTests(unittest.TestCase):
                 frozenset([frozenset([5]), frozenset([4])]),
             ]
         whitelist = [1,5]
-        result = filters.filter_enumeration(words+pairs, whitelist)
+        tfidfList = [(x, 0.6) for x in range(1,6)]
+        result = filters.filter_enumeration(words+pairs, whitelist, tfidfList)
         self.assertEqual(expected, result)
 
     def test_filter_enumeration_emptyFilter(self):
@@ -176,6 +184,7 @@ class FiltersTests(unittest.TestCase):
         enumeration = words + pairs
         expected = []
         wordsToFilter = []
-        result = filters.filter_enumeration(enumeration, wordsToFilter)
+        tfidfList = [(x, 0.6) for x in range(1,6)]
+        result = filters.filter_enumeration(enumeration, wordsToFilter, tfidfList)
         self.assertEqual(expected, result)
 
