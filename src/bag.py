@@ -31,21 +31,22 @@ def f(x, bags):
             return i
         i = i+1
 
-
 def isNewAtM(x, bags, bagDict, m):
     if bagDict.get(x, inf) < m:
         return False
 
     retval = True
-    fval = f(x, bags)
-    if fval is not None:
+        
+    if len(x) > 1:
         yvalMin = inf
         for y in x:
             yval = bagDict.get(y, inf)
             if yval < inf and isSubset(x, bags[yval-1]):
                 retval =  False
                 yvalMin = min(yvalMin, yval)
-        #store f(X) which equals the smallest f(y)
+    if retval:
+        bagDict[x] = m
+    else:
         bagDict[x] = yvalMin
     return retval 
 
@@ -98,6 +99,26 @@ def enumerateMultiBag(newBags, bags, bagDict):
             break
     return (enumeration, bagDict)
 
+def enumerateMultiBagWithNeighbours(newBags, bags, bagDict):
+    """
+    Enumerate using the sub bag approach, but use a sliding window of 3 subbags as bag
+    """
+    enumeration = set([])
+    index = 0
+    compositeBags = []
+    while index + 2 < len(newBags):
+        first  = newBags[index]
+        second = newBags[index+1]
+        third = newBags[index+2]
+        compositeBag = set(first | second | third)
+        compositeBags.append(compositeBag)
+        enumeration = enumeration | enumerateBagHelper(compositeBag, bags, bagDict, 1, len(bags) + 1)
+        index += 1
+
+    for bag in compositeBags:
+        pairBag = getSubsets(bag, 1) - enumeration
+        enumeration = enumeration | enumerateBagHelper(pairBag, bags, bagDict, 2, len(bags) + 1)
+    return (enumeration, bagDict)
 
 def enumerate(bags):
     """

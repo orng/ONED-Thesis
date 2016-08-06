@@ -5,6 +5,7 @@ import json
 
 import helpers
 import preprocessing as pre
+import  filters
 
 def containsKeyWords(keywords, enumeration):
     """
@@ -17,16 +18,18 @@ def containsKeyWords(keywords, enumeration):
         True/False
     """
     #flatten the enumeration, we only care about words
-    words = set([])
+    words = []
     for i in enumeration:
         if len(i) > 1:
             for j in i:
-                words = words | set(j)
+                words += j
         else:
-            words = words | set(i)
+            words +=  i
+
+    wordSet = set(words)
 
     for k in keywords:
-        if k in words:
+        if (u""+k) in wordSet:
             return True
     return False
 
@@ -52,23 +55,28 @@ def digest(inputFile, outputFile, keywords):
     Digest the given json file
     """
     enumerations = helpers.loadJson(inputFile, [])
+    keywords = pre.stem_words(keywords)
+    outputBuffer = open(outputFile, 'w')
     for e in enumerations:
         enumeration = e['enumeration']
-        if not containsKeyWords(keywords, enumeration):
-            #skip the enumeration, it doesn't contain the keywords
-            #we are interested in 
-            #i+=1
-            continue
-        words = e['text']
-        url = e['url']
-        frozenEnum = listToFrozenset(enumeration)
+        if containsKeyWords(keywords, enumeration):
+            words = e['text']
+            url = e['url']
+            frozenEnum = listToFrozenset(enumeration)
 
-        newWords = [y for x in frozenEnum for y in x if len(x)==1 and y in keywords]
-        newPairs = [x for x in frozenEnum if len(x) >1 and pre.isSetItemInList(x, keywords)]
-        postFilterEnum = newWords + newPairs
+            words = [x for x in frozenEnum if len(x) == 1]
+            pairs = [x for x in frozenEnum if len(x) > 1]
+            newWords = filters.removeWords(keywords, words)
+            newPairs = filters.removePairs(keywords, pairs)
+            #newWords = [y for x in frozenEnum for y in x if len(x)==1 and y in keywords]
+            #newPairs = [x for x in frozenEnum if len(x) >1 and isSetItemInList(x, keywords)]
+            postFilterEnum = newWords + newPairs
+            print postFilterEnum
+            tfidfList = [(x, 1) for x in keywords]
 
-        #filter stuff not containing keywords
-        helpers.printEnumeration(url, words, postFilterEnum, [], outputFile)
+            #filter stuff not containing keywords
+            helpers.printEnumerationToFileObject(url, words, postFilterEnum, outputBuffer, tfidfList)
+    outputBuffer.close()
 
 
 if __name__ == '__main__':

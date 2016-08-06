@@ -195,7 +195,7 @@ class BagTests(unittest.TestCase):
         """
         Test when a word is new in the article but appears in more than one subbag
         """
-        words = [['dog', 'cat', 'cow'], ['dog', 'chicken']]
+        words = [['dog', 'cat', 'cow'], ['cat', 'chicken'], ['dog', 'cow'], ['cow', 'chicken']]
         oldBags = [
             set([frozenset(['cat'])]),
             set([frozenset(['dog'])])
@@ -221,6 +221,33 @@ class BagTests(unittest.TestCase):
                         ]) : 3
                     }
         enumeration, bagDict = bag.enumerateMultiBag(words, oldBags, oldDict)
+        self.assertEqual(expectedEnum, enumeration)
+        self.assertEqual(expectedDict, bagDict)
+
+    def test_enumerateMultiBagWithNeighbours(self):
+        words = [set(['dog', 'cat']), set(['cat', 'chicken']), set(['dog', 'cow']), set(['cow', 'chicken'])]
+        oldBags = [
+            set([frozenset(['cat'])]),
+            set([frozenset(['cow'])])
+        ]
+        oldDict = {
+            frozenset(['cat']): 1,
+            frozenset(['cow']): 2,
+        }
+
+        expectedEnum = set([
+            frozenset(['dog']),
+            frozenset(['chicken']),
+            frozenset([frozenset(['cat']), frozenset(['cow'])]),
+        ])
+        expectedDict = {
+                        frozenset(['cat']): 1,
+                        frozenset(['cow']): 2,
+                        frozenset(['dog']): 3,
+                        frozenset(['chicken']): 3,
+                        frozenset([frozenset(['cat']), frozenset(['cow'])]): 3,
+                    }
+        enumeration, bagDict = bag.enumerateMultiBagWithNeighbours(words, oldBags, oldDict)
         self.assertEqual(expectedEnum, enumeration)
         self.assertEqual(expectedDict, bagDict)
         

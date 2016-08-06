@@ -28,7 +28,7 @@ def loadWordbanks(wordbanks):
     texts = list()
     for item in wordbanks:
         texts = loadJson(item, texts)
-    return sorted(texts, key=lambda d: d['date'])[:300]#TODO: remove 300 limit
+    return sorted(texts, key=lambda d: d['date'])#[:600]#TODO: remove 300 limit
 
 def textWithTitle(textItem):
     """
@@ -71,13 +71,19 @@ def enumerateTexts(texts, threshold, filterType, resultFile, useSubBags=False):
 
         if useSubBags:
             enumeration, bagDict = bag.enumerateMultiBag(words, enumeratedBags, bagDict)
+            #enumeration, bagDict = bag.enumerateMultiBagWithNeighbours(words, enumeratedBags, bagDict)
         else:
             enumeration, bagDict = bag.enumerateBag(flatWords, enumeratedBags, bagDict)
+            #filtering before enumeration:
+            #enumeration, bagDict = bag.enumerateBag(wordsToFilter, enumeratedBags, bagDict)
 
         filteredEnumeration = filters.filter_enumeration(enumeration, wordsToFilter, tfidfList)
         textCopy = dict(text)
         textCopy['enumeration'] = filteredEnumeration
-        #enumerations.append(textCopy)
+
+        enumerations.append(textCopy)
+
+        """
         printEnumerationToFileObject(
             text['url'],
             textWithTitle(text),
@@ -85,6 +91,7 @@ def enumerateTexts(texts, threshold, filterType, resultFile, useSubBags=False):
             resultFileObject,
             tfidfList
         )
+        """
 
         enumeratedBags.append(bag.getSubsets(flatWords, 1))
         if filteredEnumeration == set([]):
@@ -106,13 +113,14 @@ def main(threshold, filterType, wordbanks, resultFile=RESULTFILE, useSubBags=Fal
     texts = loadWordbanks(wordbanks)
 
     #replace result file contents with header
-    with open(resultFile, 'w') as f:
-        s = "Initializing run\nInputFiles: {input}\nFilter: {filter}\nThreshold: {threshold}\n=======================================\n"
-        f.write(s.format(s, input=wordbanks, filter=filterType, threshold=threshold))
+    #with open(resultFile, 'w') as f:
+        #s = "Initializing run\nInputFiles: {input}\nFilter: {filter}\nThreshold: {threshold}\n=======================================\n"
+        #f.write(s.format(s, input=wordbanks, filter=filterType, threshold=threshold))
 
 
     enumerations, old = enumerateTexts(texts, threshold, filterType, resultFile, useSubBags)
-    #printEnumerationJson(enumerations, resultFile)
+    #print as json
+    printEnumerationJson(enumerations, resultFile)
 
 
 def massRun():
