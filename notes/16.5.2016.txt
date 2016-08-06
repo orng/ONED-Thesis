@@ -1,0 +1,1 @@
+During the halt-time report Alejandro mentioned giving examples where unused metrics fail so as to explain why they weren't used.
