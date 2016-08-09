@@ -4,8 +4,6 @@
 
 __author__ = "Orn Gudjonsson"
 
-from math import log
-from collections import defaultdict
 from stemming.porter2 import stem
 import nltk
 from nltk.corpus import stopwords
@@ -50,8 +48,9 @@ def tokenize(text):
     
 
 def to_wordlist(text):
-    return remove_stopwords(
-            stem_words(
+    return 
+        stem_words(
+            remove_stopwords(
                 tokenize(
                     remove_punctuation(
                         text))))
