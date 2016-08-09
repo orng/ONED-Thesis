@@ -1,3 +1,18 @@
 \chapter{Experiments}
 \label{chapter:experiments}
 TODO: explain in detail out implementations, approaches tested, how we tested and on what datasets, how the datasets were obtained etc.
+
+We implemented the concepts discussed in chapter~\ref{chapter:method} using the Python (TODO: CITATION) programming language. We then used these implementations to test the effectiveness of the various methods on several different datasets. In this chapter we discuss our implementation in some detail as well as how the tests were carried out along with what data was used for testing.
+
+\section{Implementation}
+For our implementation we chose Python because it supports many high-level concepts such as lamda functions, list comprehensions etc. as well as for its extensive standard library and excellent availability of good third-party libraries such as the Natural Language Tool Kit (NLTK) (TODO: CITATION).
+
+\subsection{Pre-processing}
+The NLTK provided us with most of the parts needed for preprocessing: we used the built-in word-tokenizer for splitting whole-string articles into lists of words,  stopwords from the English corpus for stopword-removal and the porter2 stemmer for fast and simple stemming of words. Python's string module provided us with a list of punctuation characters which we used to remove punctuation. Our pre-processing step first removed any punctuation character, then tokenized the input-string, removed all the stopwords then stemmed each of the tokens. (TODO: CITATIONS? PORTER2, nltk)
+
+\subsection{Enumeration}
+We implemented the algorithm described in section~\label{method:enumeration}. Our implementation uses sets of strings (or Python's frozensets in cases where the sets had to be hashed) to represent the bags of words to enumerate, a list of bags (list of sets of strings) to store previously seen bags and a dictionary (hashmap) with frozensets as keys and integers as values for mapping previously seen minimal new sets to the number of the bag in which they first appeared.
+
+\section{Tests}
+
+
