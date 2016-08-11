@@ -48,12 +48,11 @@ def tokenize(text):
     
 
 def to_wordlist(text):
-    return 
-        stem_words(
-            remove_stopwords(
-                tokenize(
-                    remove_punctuation(
-                        text))))
+    return stem_words(
+        remove_stopwords(
+            tokenize(
+                remove_punctuation(
+                    text))))
 
 def get_sentences(text):
     return nltk.sent_tokenize(text)
