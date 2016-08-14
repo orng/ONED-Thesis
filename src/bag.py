@@ -50,21 +50,57 @@ def isNewAtM(x, bags, bagDict, m):
         bagDict[x] = yvalMin
     return retval 
 
+def isNewAtMMulti(x, bags, bagDict, (m, s)):
+    """
+    bagDict now stores (k, [i]) where k is parent bag number
+    and [i] is a list of all subbags of k containing i
+    """
+    lookupTuple = bagDict.get(x, (inf, []))
+    if lookupTuple[0] < m:
+        return False
+    elif lookupTuple[0] == m:
+        bagDict[x] = (m, lookupTuple[1]+[s])
+        return True
+
+    retval = True
+    
+    if len(x) > 1:
+        yvalMin = inf
+        ySubsMin = []
+        for y in x:
+            (yval, ySubs) = bagDict.get(y, (inf, []))
+            foundSubBags = []
+            isFound = False
+            for subBag in ySubs:
+                if yval < inf and isSubset(x, list(bags[yval-1])[subBag]):
+                    retval = False
+                    isFound = True
+                    foundSubBags.append(subBag)
+            if isFound:
+                if yval < yvalMin:
+                    yvalMin = yval
+                    ySubsMin = foundSubBags
+
+    if retval:
+        #completely new, store it
+        bagDict[x] = (m, [s])
+    else:
+        bagDict[x] = (yvalMin, ySubsMin)
+    return retval
     
 def isSubset(a,b):
     return a-b == set([])
 
 
-def enumerateBagHelper(newBag, bags, bagDict, n, i):
+def enumerateBagHelper(newBag, bags, bagDict, n, i, isNewAtMFunc=isNewAtM):
     newSets = []
     subsets = getSubsets(newBag, n)
     for subset in subsets:
-        if isNewAtM(subset, bags, bagDict, i):
+        if isNewAtMFunc(subset, bags, bagDict, i):
             newSets.append(subset)
             #i = f(subset, enumeratedBags) if i is not None
-            bagDict[subset] = i
+            #bagDict[subset] = i
     return set(newSets)
-
 
 def enumerateBag(newBag, bags, bagDict):
     """
@@ -91,9 +127,12 @@ def enumerateBag(newBag, bags, bagDict):
 
 def enumerateMultiBag(newBags, bags, bagDict):
     enumeration = set([])
+    bagNr = len(bags) +1
     for n in range(1,3):
+        subsetNr = 0
         for subBag in newBags:
-            enumeration = enumeration | enumerateBagHelper(subBag, bags, bagDict, n, len(bags) + 1)
+            enumeration = enumeration | enumerateBagHelper(subBag, bags, bagDict, n, (bagNr, subsetNr), isNewAtMMulti)
+            subsetNr += 1
         newBags = [getSubsets(x, n) - enumeration for x in newBags]
         if newBags == set([]):
             break

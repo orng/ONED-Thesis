@@ -177,15 +177,17 @@ class BagTests(unittest.TestCase):
         words = [['dog', 'cat'], ['cat', 'chicken']]
         oldBags = [
                 set([
-                    frozenset(['cat'])
+                    frozenset([
+                        frozenset(['cat'])
+                    ])
                 ])]
-        oldDict = {frozenset(['cat']): 1}
+        oldDict = {frozenset(['cat']): (1, [0])}
 
         expectedEnum = set([frozenset(['dog']), frozenset(['chicken'])])
         expectedDict = {
-                        frozenset(['cat']): 1,
-                        frozenset(['dog']): 2,
-                        frozenset(['chicken']): 2
+                        frozenset(['cat']): (1, [0]),
+                        frozenset(['dog']): (2, [0]),
+                        frozenset(['chicken']): (2, [1]),
                     }
         enumeration, bagDict = bag.enumerateMultiBag(words, oldBags, oldDict)
         self.assertEqual(expectedEnum, enumeration)
@@ -197,12 +199,14 @@ class BagTests(unittest.TestCase):
         """
         words = [['dog', 'cat', 'cow'], ['cat', 'chicken'], ['dog', 'cow'], ['cow', 'chicken']]
         oldBags = [
-            set([frozenset(['cat'])]),
-            set([frozenset(['dog'])])
+            set([
+                frozenset([frozenset(['cat'])]),
+                frozenset([frozenset(['dog'])])
+            ])
         ]
         oldDict = {
-            frozenset(['cat']): 1,
-            frozenset(['dog']): 2,
+            frozenset(['cat']): (1, [0]),
+            frozenset(['dog']): (1, [1]),
         }
 
         expectedEnum = set([
@@ -211,14 +215,14 @@ class BagTests(unittest.TestCase):
             frozenset(['cow'])
         ])
         expectedDict = {
-                        frozenset(['cat']): 1,
-                        frozenset(['dog']): 2,
-                        frozenset(['chicken']): 3,
-                        frozenset(['cow']): 3,
+                        frozenset(['cat']): (1, [0]),
+                        frozenset(['dog']): (1, [1]),
+                        frozenset(['chicken']): (2, [1, 3]),
+                        frozenset(['cow']): (2, [0, 2, 3]),
                         frozenset([
                             frozenset(['cat']),
                             frozenset(['dog']),
-                        ]) : 3
+                        ]) : (2, [0]),
                     }
         enumeration, bagDict = bag.enumerateMultiBag(words, oldBags, oldDict)
         self.assertEqual(expectedEnum, enumeration)

@@ -15,7 +15,7 @@ def stem_words(wordlist):
     """
     Given a string returns a list of all the words, stemmed.
     """
-    return [stem(x).lower() for x in wordlist]
+    return [stem(x) for x in wordlist]
 
 def remove_stopwords(words):
     """
@@ -52,7 +52,11 @@ def to_wordlist(text):
         remove_stopwords(
             tokenize(
                 remove_punctuation(
-                    text))))
+                    text.lower()
+                )
+            )
+        )
+    )
 
 def get_sentences(text):
     return nltk.sent_tokenize(text)

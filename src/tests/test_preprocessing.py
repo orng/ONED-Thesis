@@ -10,7 +10,6 @@ from collections import defaultdict
 
 class PreprocessingTests(unittest.TestCase):
         
-
     def test_remove_numbers(self):
         words = ['dog', 'cat', '999', '1234', '0001']
         expected = ['dog', 'cat']
@@ -24,8 +23,8 @@ class PreprocessingTests(unittest.TestCase):
         self.assertEqual(expected, result)
 
     def test_stem_words(self):
-        words = ['The', 'horizontal', 'dogs', 'are', 'chewing', 'the', 'puppies']
-        expected = ['the', 'horizont', 'dog', 'are', 'chew', 'the', 'puppi']
+        words = ['The', 'Horizontal', 'dogs', 'are', 'chewing', 'the', 'puppies']
+        expected = ['The', 'Horizont', 'dog', 'are', 'chew', 'the', 'puppi']
         result = pre.stem_words(words)
         self.assertNotEqual(words, result)
         self.assertEqual(expected, result)
@@ -45,8 +44,14 @@ class PreprocessingTests(unittest.TestCase):
         result = pre.get_sentences(text)
         self.assertEqual(expected, result)
 
+    def test_to_wordlist(self):
+        text = u"The word and the other thing."
+        expected = ['word', 'thing']
+        result = pre.to_wordlist(text)
+        self.assertEqual(expected, result)
+
     def test_to_wordlist_multi(self):
-        text = u"Cat dog. Dog cow."
+        text = u"The cat and the dog. Dog cow."
         expected = [('cat', 'dog'), ('dog', 'cow')]
         result = pre.to_wordlist_multi(text)
         self.assertEqual(expected, result)

@@ -57,7 +57,7 @@ def pair_tfidf(pair, tfidfDict):
 #TODO/Note: tests indicate that we need to train like 10 articles first, 
 # investigate further and include in report maybe?
 def filter_pairs_tfidf(pairs, tfidfList):
-    return pairs #TODO: remove this temporary line
+    #return pairs #TODO: remove this temporary line
     tfidfDict = {x: y for (x,y) in tfidfList}
     retPairs = []
     for pair in pairs:
