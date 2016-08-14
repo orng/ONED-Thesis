@@ -7,7 +7,7 @@ On-line New Event Detection has seen much development in the past 15 years as it
 
 \section{What are events?}
 The concept of events in daily speech can be somewhat ambiguous~\cite{papka1999online} and in order for us to reason about events it is important that we specify what we mean. "The United States invade Vietnam" could be considered an event but at the same time the whole Vietnam War could be considered an event. We use TDT's definition of events: An event is ``a particular thing that happens at a specific time and place, along with all necessary preconditions and unavoidable consequences''. [TODO: cite https://catalog.ldc.upenn.edu/docs/LDC2006T19/TDT2004V1.2.pdf]
-[TODO: elaborate]
+A new news-story does therefore not necessarily report an new event. For instance a news story reporting about a natural disaster would contain a new event, whereas consecutive articles detailing the extent of the damage cause and the particulars of the rebuilding efforts that follow, would not. In ONED we want to be able to detect only those stories which contain events, and in particular, only new events which have not been reported before.
 
 \section{Related works}
 A classical approach to ONED is to represent documents as term vectors where each term within a document is weighted using some metric, typically TF-IDF (term frequency-inverse document frequency)[TODO: citation], which are then compared in some way to the vector representations of previously seen documents.
