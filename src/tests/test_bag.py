@@ -2,17 +2,17 @@
 
 __author__ = "Orn Gudjonsson"
 
-import unittest
+#import unittest
 import pytest
 from enumerator import bag
 
-class BagTests(unittest.TestCase):
+class TestBag():
 
     def test_getSubsets_sizeOne(self):
         items = [1,2,3,4]
         expected = set([frozenset([1]),frozenset([2]),frozenset([3]),frozenset([4])])
         subsets = bag.getSubsets(items, 1)
-        self.assertEqual(expected, subsets)
+        assert expected == subsets
 
     def test_getSubsets_sizeThree(self):
         items = [1,2,3,4]
@@ -23,7 +23,7 @@ class BagTests(unittest.TestCase):
                     frozenset([1,2,4]),
                 ])
         subsets = bag.getSubsets(items, 3)
-        self.assertEqual(expected, subsets)
+        assert expected == subsets
 
     #TODO: isNewAtM
 
@@ -37,9 +37,9 @@ class BagTests(unittest.TestCase):
                     frozenset(['chicken']): 2,
                 }
         result = bag.isNewAtM(x, bags, bagDict, 2)
-        self.assertEqual(False, result)
+        assert False == result
         result2 = bag.isNewAtM(x, bags, bagDict, 1)
-        self.assertEqual(True, result2)
+        assert True == result2
 
 
     def test_f_onlyMemeber(self):
@@ -47,7 +47,7 @@ class BagTests(unittest.TestCase):
         subset = frozenset(['dog', 'cat'])
         bags = [subset]
         result = bag.f(subset, bags)
-        self.assertEqual(1, result)
+        assert 1 == result
 
     def test_f_seenTwice(self):
         """Test f for when the given item has been seen twice"""
@@ -55,7 +55,7 @@ class BagTests(unittest.TestCase):
         bags = [set(['dog', 'cat']),
                 set(['dog', 'chicken'])]
         result = bag.f(subset, bags)
-        self.assertEqual(1, result)
+        assert 1 == result
 
 
     def test_enumerateBag_empty(self):
@@ -66,8 +66,8 @@ class BagTests(unittest.TestCase):
         expectedDict = {frozenset(['dog']): 1, 
                         frozenset(['cat']): 1}
         enumeration, bagDict = bag.enumerateBag(words, [], {})
-        self.assertEqual(expectedEnum, enumeration)
-        self.assertEqual(expectedDict, bagDict)
+        assert expectedEnum == enumeration
+        assert expectedDict == bagDict
 
     def test_enumerateBag_nonempty(self):
         """tests bag enumeration when there are previous bags"""
@@ -81,8 +81,8 @@ class BagTests(unittest.TestCase):
                         frozenset(['cat']): 1,
                         frozenset(['chicken']): 2}
         enumeration, bagDict = bag.enumerateBag(words, oldBags, oldDict)
-        self.assertEqual(expectedEnum, enumeration)
-        self.assertEqual(expectedDict, bagDict)
+        assert expectedEnum == enumeration
+        assert expectedDict == bagDict
 
     def test_enumerateBag_duplicate(self):
         """tests enumaration of an already seen item"""
@@ -92,8 +92,8 @@ class BagTests(unittest.TestCase):
         expectedEnum = set([])
         expectedDict = {frozenset(['dog']): 1}
         enumeration, bagDict = bag.enumerateBag(words, oldBags, oldDict)
-        self.assertEqual(expectedEnum, enumeration)
-        self.assertEqual(expectedDict, bagDict)
+        assert expectedEnum == enumeration
+        assert expectedDict == bagDict
 
     def test_enumerateBag_newPair(self):
         words = ['dog', 'chicken']
@@ -114,8 +114,8 @@ class BagTests(unittest.TestCase):
                         frozenset([frozenset(['dog']), frozenset(['chicken'])]): 3
                        }
         enumeration, bagDict = bag.enumerateBag(words, oldBags, oldDict)
-        self.assertEqual(expectedEnum, enumeration)
-        self.assertEqual(expectedDict, bagDict)
+        assert expectedEnum == enumeration
+        assert expectedDict == bagDict
 
     def test_enumerateBag_oldPairOfPreviouslyNew(self):
         """Tests the case where words have appeared together previously with 
@@ -143,8 +143,8 @@ class BagTests(unittest.TestCase):
                     ])
         expectedDict[newSet] = 2
         enumeration, bagDict = bag.enumerateBag(words, oldBags, oldDict)
-        self.assertEqual(expectedEnum, enumeration)
-        self.assertEqual(expectedDict, bagDict)
+        assert expectedEnum == enumeration
+        assert expectedDict == bagDict
 
     def test_enumerateBag_oldPairBothPreviouslyNewTogether(self):
         words = ['dog', 'chicken']
@@ -168,8 +168,8 @@ class BagTests(unittest.TestCase):
                                     
 
         enumeration, bagDict = bag.enumerateBag(words, oldBags, oldDict)
-        self.assertEqual(expectedEnum, enumeration)
-        self.assertEqual(expectedDict, bagDict)
+        assert expectedEnum == enumeration
+        assert expectedDict == bagDict
 
     def test_enumeration_triple(self):
         words = ['dog', 'chicken', 'cow']
@@ -215,8 +215,8 @@ class BagTests(unittest.TestCase):
         expectedDict = dict(oldDict)
         expectedDict[triple] = 5
         enumeration, bagDict = bag.enumerateBag(words, oldBags, oldDict)
-        self.assertEqual(expectedEnum, enumeration)
-        self.assertEqual(expectedDict, bagDict)
+        assert expectedEnum == enumeration
+        assert expectedDict == bagDict
 
     def test_enumeration_noEnumeration(self):
         """
@@ -235,8 +235,8 @@ class BagTests(unittest.TestCase):
         expectedEnum = set([])
         expectedDict = dict(oldDict)
         enumeration, bagDict = bag.enumerateBag(words, oldBags, oldDict)
-        self.assertEqual(expectedEnum, enumeration)
-        self.assertEqual(expectedDict, bagDict)
+        assert expectedEnum == enumeration
+        assert expectedDict == bagDict
 
 
     def test_enumerateMultiBag(self):
@@ -259,8 +259,8 @@ class BagTests(unittest.TestCase):
                         frozenset(['chicken']): (2, [1]),
                     }
         enumeration, bagDict = bag.enumerateMultiBag(words, oldBags, oldDict)
-        self.assertEqual(expectedEnum, enumeration)
-        self.assertEqual(expectedDict, bagDict)
+        assert expectedEnum == enumeration
+        assert expectedDict == bagDict
 
     def test_enumerateMultiBag_sameNewWordInSubBags(self):
         """
@@ -294,8 +294,8 @@ class BagTests(unittest.TestCase):
                         ]) : (2, [0]),
                     }
         enumeration, bagDict = bag.enumerateMultiBag(words, oldBags, oldDict)
-        self.assertEqual(expectedEnum, enumeration)
-        self.assertEqual(expectedDict, bagDict)
+        assert expectedEnum == enumeration
+        assert expectedDict == bagDict
 
     def test_enumerateMultiBagWithNeighbours(self):
         words = [set(['dog', 'cat']), set(['cat', 'chicken']), set(['dog', 'cow']), set(['cow', 'chicken'])]
@@ -321,8 +321,8 @@ class BagTests(unittest.TestCase):
                         frozenset([frozenset(['cat']), frozenset(['cow'])]): 3,
                     }
         enumeration, bagDict = bag.enumerateMultiBagWithNeighbours(words, oldBags, oldDict)
-        self.assertEqual(expectedEnum, enumeration)
-        self.assertEqual(expectedDict, bagDict)
+        assert expectedEnum == enumeration
+        assert expectedDict == bagDict
         
 
     def test_enumrationToGraph(self):
@@ -334,8 +334,8 @@ class BagTests(unittest.TestCase):
         expectedNodes = set(list1+list2)
         expectedEdges = pairs
         nodes, nrOfEdges = bag.enumerationToGraph(pairs)
-        self.assertEqual(expectedNodes, nodes)
-        self.assertEqual(expectedEdges, nrOfEdges)
+        assert expectedNodes == nodes
+        assert expectedEdges, nrOfEdges
 
     def test_nodeDegrees(self):
         nodes = set([
@@ -354,9 +354,9 @@ class BagTests(unittest.TestCase):
                 ])
         expected = [('dog', 2), ('cat', 2), ('cow', 1), ('chicken', 1)]
         result = bag.nodeDegrees(nodes)
-        self.assertEqual(set(expected), set(result))
-        self.assertTrue(result[0][1] == result[1][1] == 2)
-        self.assertTrue(result[2][1] == result[3][1] == 1)
+        assert set(expected) == set(result)
+        assert result[0][1] == result[1][1] == 2
+        assert result[2][1] == result[3][1] == 1
 
         
 
