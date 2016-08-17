@@ -94,7 +94,11 @@ def enumerateTexts(texts, threshold, filterType, resultFile, useSubBags=False):
             tfidfList
         )
 
-        enumeratedBags.append(bag.getSubsets(flatWords, 1))
+        if useSubBags:
+            enumeratedBags.append([bag.getSubsets(x, 1) for x in words])
+        else:
+            enumeratedBags.append(bag.getSubsets(flatWords, 1))
+
         if filteredEnumeration == set([]):
             old.append(text['url'])
 

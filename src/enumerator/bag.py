@@ -117,31 +117,24 @@ def enumerateBag(newBag, bags, bagDict):
     """
     enumeration = set([])
     #TODO: do the "stop as soon as all further X would be supersets.." thing
-    n = 1
-    #for n in range(1, 3):
-    while True:
+    for n in range(1, 3):
         enumeration = enumeration | enumerateBagHelper(newBag, bags, bagDict, n, len(bags) + 1)
         newBag = getSubsets(newBag, n) - enumeration
         if newBag == set([]):
             break
-        n += 1
     return (enumeration, bagDict)
 
 
 def enumerateMultiBag(newBags, bags, bagDict):
     enumeration = set([])
     bagNr = len(bags) +1
-    #for n in range(1,3):
     subsetNr = 0
     for subBag in newBags:
-        while True:
-            n=1
+        for n in range(1,3):
             enumeration = enumeration | enumerateBagHelper(subBag, bags, bagDict, n, (bagNr, subsetNr), isNewAtMMulti)
-            print getSubsets(subBag, n), enumeration
             subBag = getSubsets(subBag, n) - enumeration
             if subBag == set([]):
                 break
-            n += 1
 
         subsetNr += 1
     #newBags = [getSubsets(x, n) - enumeration for x in newBags]

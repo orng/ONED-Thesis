@@ -171,6 +171,7 @@ class TestBag():
         assert expectedEnum == enumeration
         assert expectedDict == bagDict
 
+    '''
     def test_enumeration_triple(self):
         words = ['dog', 'chicken', 'cow']
         oldBags = [
@@ -217,6 +218,7 @@ class TestBag():
         enumeration, bagDict = bag.enumerateBag(words, oldBags, oldDict)
         assert expectedEnum == enumeration
         assert expectedDict == bagDict
+        '''
 
     def test_enumeration_noEnumeration(self):
         """
