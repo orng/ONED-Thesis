@@ -137,8 +137,9 @@ def enumerateMultiBag(newBags, bags, bagDict):
         while True:
             n=1
             enumeration = enumeration | enumerateBagHelper(subBag, bags, bagDict, n, (bagNr, subsetNr), isNewAtMMulti)
+            print getSubsets(subBag, n), enumeration
             subBag = getSubsets(subBag, n) - enumeration
-            if newBags == set([]):
+            if subBag == set([]):
                 break
             n += 1
 
