@@ -3,7 +3,8 @@
 __author__ = "Orn Gudjonsson"
 
 import unittest
-import bag
+import pytest
+from enumerator import bag
 
 class BagTests(unittest.TestCase):
 
@@ -169,6 +170,74 @@ class BagTests(unittest.TestCase):
         enumeration, bagDict = bag.enumerateBag(words, oldBags, oldDict)
         self.assertEqual(expectedEnum, enumeration)
         self.assertEqual(expectedDict, bagDict)
+
+    def test_enumeration_triple(self):
+        words = ['dog', 'chicken', 'cow']
+        oldBags = [
+                set([
+                    frozenset(['dog']),
+                    frozenset(['cat']),
+                ]),
+                set([
+                    frozenset(['cow']),
+                    frozenset(['chicken']),
+                ]),
+                set([
+                    frozenset(['dog']),
+                    frozenset(['cow']),
+                ]),
+                set([
+                    frozenset(['dog']),
+                    frozenset(['chicken']),
+                ]),
+        ]
+        oldDict = {
+            frozenset(['dog']): 1,
+            frozenset(['cat']): 1,
+            frozenset(['cow']): 2,
+            frozenset(['chicken']): 2,
+            frozenset([
+                frozenset(['dog']),
+                frozenset(['cow']),
+            ]): 3,
+            frozenset([
+                frozenset(['dog']),
+                frozenset(['chicken']),
+            ]): 4
+        }
+        triple = frozenset([
+            frozenset(['dog']),
+            frozenset(['chicken']),
+            frozenset(['cow']),
+        ])
+        
+        expectedEnum = set([triple])
+        expectedDict = dict(oldDict)
+        expectedDict[triple] = 5
+        enumeration, bagDict = bag.enumerateBag(words, oldBags, oldDict)
+        self.assertEqual(expectedEnum, enumeration)
+        self.assertEqual(expectedDict, bagDict)
+
+    def test_enumeration_noEnumeration(self):
+        """
+        We get the same pair three times in a row, there is nothing 
+        we can do so enumeration should come up empty
+        """
+        words = ['cow', 'chicken']
+        oldBags = [set([frozenset(['cow']), frozenset(['chicken'])]),
+            set([frozenset(['cow']), frozenset(['chicken'])])
+        ]
+        oldDict = {
+            frozenset(['cow']): 1,
+            frozenset(['chicken']) : 1,
+            frozenset([frozenset(['cow']), frozenset(['chicken'])]): 2
+        }
+        expectedEnum = set([])
+        expectedDict = dict(oldDict)
+        enumeration, bagDict = bag.enumerateBag(words, oldBags, oldDict)
+        self.assertEqual(expectedEnum, enumeration)
+        self.assertEqual(expectedDict, bagDict)
+
 
     def test_enumerateMultiBag(self):
         """

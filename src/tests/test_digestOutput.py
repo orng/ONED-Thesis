@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import unittest
-import digestOutput as digest
+from enumerator import digestOutput as digest
 
 class DigestOutputTests(unittest.TestCase):
 

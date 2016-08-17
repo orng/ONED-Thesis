@@ -4,9 +4,10 @@
 
 __author__ = "Orn Gudjonsson"
 
-import unittest
-import preprocessing as pre
 from collections import defaultdict
+import unittest
+
+from enumerator import preprocessing as pre
 
 class PreprocessingTests(unittest.TestCase):
         

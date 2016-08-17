@@ -5,8 +5,9 @@
 __author__ = "Orn Gudjonsson"
 
 import unittest
-import filters
 from collections import defaultdict
+
+from enumerator import filters
 
 class FiltersTests(unittest.TestCase):
     def test_term_frequency(self):

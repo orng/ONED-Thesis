@@ -3,7 +3,7 @@
 __author__ = "Orn Gudjonsson"
 
 import unittest
-import helpers
+from enumerator import helpers
 
 class HelpersTests(unittest.TestCase):
 
