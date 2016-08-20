@@ -28,7 +28,7 @@ def loadWordbanks(wordbanks):
     texts = list()
     for item in wordbanks:
         texts = loadJson(item, texts)
-    return sorted(texts, key=lambda d: d['date'])[:600]#TODO: remove limit
+    return sorted(texts, key=lambda d: d['date'])#[:600]#TODO: remove limit
 
 def textWithTitle(textItem):
     """
@@ -39,7 +39,15 @@ def textWithTitle(textItem):
     else:
         return textItem['text']
 
-def enumerateTexts(texts, threshold, filterType, resultFile, useSubBags=False):
+def enumerateTexts(
+        texts,
+        threshold,
+        filterType,
+        resultFile,
+        useSubBags=False,
+        printToJson=False,
+        preFilter=False,
+        useNeighbours=False):
     """
     Enumerate the texts and print the results to resultFile.
     """
@@ -55,6 +63,7 @@ def enumerateTexts(texts, threshold, filterType, resultFile, useSubBags=False):
 
     resultFileObject = open(resultFile, 'a')
 
+    startTime = time.time()
     for text in texts:
         i = i+1
         sys.stdout.write("Processing: {0}/{1}".format(i, len(texts)))
@@ -65,26 +74,29 @@ def enumerateTexts(texts, threshold, filterType, resultFile, useSubBags=False):
             subBagList = pre.to_wordlist_multi(textWithTitle(text))
             flatWords = [y for x in subBagList for y in x]
             wordsToFilter, wordFrequency, tfidfList = filters.filterWordList(flatWords, wordFrequency, filterType, threshold, i)
-            flatWords = set(flatWords)
             words = [set(x) for x in subBagList]
         else:
             words = pre.preprocess(textWithTitle(text))
             wordsToFilter, wordFrequency, tfidfList = filters.filterWordList(words, wordFrequency, filterType, threshold, i)
-            flatWords = set(words)
+            words = set(words)
 
         if useSubBags:
-            enumeration, bagDict = bag.enumerateMultiBag(words, enumeratedBags, bagDict)
-            #enumeration, bagDict = bag.enumerateMultiBagWithNeighbours(words, enumeratedBags, bagDict)
+            if useNeighbours:
+                enumeration, bagDict = bag.enumerateMultiBagWithNeighbours(words, enumeratedBags, bagDict)
+            else:
+                enumeration, bagDict = bag.enumerateMultiBag(words, enumeratedBags, bagDict)
         else:
-            enumeration, bagDict = bag.enumerateBag(flatWords, enumeratedBags, bagDict)
-            #filtering before enumeration:
-            #enumeration, bagDict = bag.enumerateBag(wordsToFilter, enumeratedBags, bagDict)
+            if preFilter:
+                enumeration, bagDict = bag.enumerateBag(wordsToFilter, enumeratedBags, bagDict)
+            else:
+                enumeration, bagDict = bag.enumerateBag(words, enumeratedBags, bagDict)
 
         filteredEnumeration = filters.filter_enumeration(enumeration, wordsToFilter, tfidfList)
         textCopy = dict(text)
         textCopy['enumeration'] = filteredEnumeration
 
-#        enumerations.append(textCopy)
+        if printToJson:
+            enumerations.append(textCopy)
 
         printEnumerationToFileObject(
             text['url'],
@@ -97,36 +109,63 @@ def enumerateTexts(texts, threshold, filterType, resultFile, useSubBags=False):
         if useSubBags:
             enumeratedBags.append([bag.getSubsets(x, 1) for x in words])
         else:
-            enumeratedBags.append(bag.getSubsets(flatWords, 1))
+            enumeratedBags.append(bag.getSubsets(words, 1))
 
         if filteredEnumeration == set([]):
             old.append(text['url'])
 
+    endTime = time.time()
     sys.stdout.write("Processing: {0}/{1}\n".format(i, len(texts)))
     sys.stdout.write("Done!\n")
+    sys.stdout.write("Completed in {time}s.".format(time=endTime-startTime))
 
     resultFileObject.close()
 
     return enumerations, old
 
 
-def main(threshold, filterType, wordbanks, resultFile=RESULTFILE, useSubBags=False):
+def main(threshold,
+        filterType,
+        wordbanks,
+        resultFile=RESULTFILE,
+        useSubBags=False,
+        printJson=False,
+        useNeighbours=False,
+        preFilter=False):
     """
     Driver of the main stuff:
     load the wordbanks, enumerate the bags, print the results
     """
     texts = loadWordbanks(wordbanks)
 
-    #replace result file contents with header
+    #replace result-file contents with header
     with open(resultFile, 'w') as f:
-        s = "Initializing run\nInputFiles: {input}\nFilter: {filter}\nThreshold: {threshold}\n=======================================\n"
-        f.write(s.format(s, input=wordbanks, filter=filterType, threshold=threshold))
+        s = "Initializing run\nInputFiles: {input}\nFilter: {filter}\nThreshold: {threshold}\nPre-filter: {preFilter}\nSubBags: {useSubBags}\nNeighbours: {useNeighbours}\n=======================================\n"
+        f.write(
+            s.format(
+                input=wordbanks,
+                filter=filterType,
+                threshold=threshold,
+                preFilter = preFilter,
+                useSubBags = useSubBags,
+                useNeighbours = useNeighbours,
+            )
+        )
 
 
-    enumerations, old = enumerateTexts(texts, threshold, filterType, resultFile, useSubBags)
+    enumerations, old = enumerateTexts(
+            texts,
+            threshold,
+            filterType,
+            resultFile,
+            useSubBags,
+            printJson,
+            preFilter,
+            useNeighbours)
 
     #print as json
-    #printEnumerationJson(enumerations, resultFile)
+    if printJson:
+        printEnumerationJson(enumerations, resultFile)
 
 
 def massRun():
@@ -151,8 +190,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Process the provided data")
     parser.add_argument('-m', '--massRun', action='store_true')
     parser.add_argument('-s', '--subBags', action='store_true')
+    parser.add_argument('-n', '--neighbours', action='store_true')
     parser.add_argument('-t', '--threshold', type=float, default=10)
     parser.add_argument('-f', '--filter', default='none')
+    parser.add_argument('-p', '--preFilter', default='none')
+    parser.add_argument('-j', '--printToJson', default='none')
     parser.add_argument('-o', '--output', default=RESULTFILE)
     parser.add_argument('articles', nargs='*')
     args = parser.parse_args()
@@ -160,13 +202,13 @@ if __name__ == '__main__':
     if args.massRun:
         massRun()
     else:
-        startTime = time.time()
         main(
                 args.threshold,
                 args.filter,
                 args.articles,
                 resultFile=args.output,
-                useSubBags=args.subBags
+                useSubBags=args.subBags,
+                useNeighbours=args.neighbours,
+                printToJson=args.printToJson,
+                preFilter=args.preFilter
             )
-        endTime = time.time()
-        print "Completed in {time}s.".format(time=endTime-startTime)

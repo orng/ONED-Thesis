@@ -34,7 +34,7 @@ def remove_punctuation(text):
     Ouput:
         unicode text with removed punctuation
     """
-    table = {ord(c): u'' for c in string.punctuation}
+    table = {ord(c): u' ' for c in string.punctuation}
     return text.translate(table)
 
 def remove_numbers(words):

@@ -9,6 +9,8 @@ class Config:
         self.thresholds = []
         self.name = ""
         self.useSubBags = False
+        self.useNeighbours = False
+        self.preFilter =False
 
 
 class Config1(Config):
@@ -25,6 +27,12 @@ class Config3(Config):
         self.thresholds = [5, 10, 15]
         self.name = "c3"
 
+class Config5(Config3):
+    def __init__(self):
+        Config3.__init__(self)
+        self.preFilter = True
+        self.name = 'c5'
+
 class Config6(Config):
     def __init__(self):
         Config.__init__(self)
@@ -32,16 +40,22 @@ class Config6(Config):
         self.thresholds = [5, 10, 15]
         self.name = "c6"
         self.useSubBags = True
+        self.useNeighbours = False
+
+class Config6b(Config6):
+    def __init__(self):
+        Config6.__init__(self)
+        self.useNeighbours = True
 
 class Config7(Config):
-    #TODO: need more params for main
+    #TODO: need more params to be able to filter pairs based on score
     def __init__(self):
         Config.__init__(self)
         self.filters = ['none', 'tfidf']
         self.thresholds = [5, 10, 15]
         self.name = "c7"
 
-def runExperiments(outputBaseFolder):
+def runExperiments(outputBaseFolder, printToJson):
     dataDir = os.path.join(os.getcwd(), '..', 'data')
     d1 = ('d1', ['reuters.jl', 'cbs.jl', 'pbs.jl'])
     d2 = ('d2', ['obama09.jl', 'obama10.jl', 'obama11.jl'])
@@ -56,10 +70,12 @@ def runExperiments(outputBaseFolder):
 
     c1 = Config1()
     c3 = Config3()
+    c5 = Config5()
     c6 = Config6()
-    configs = [c1, c3, c6]#TODO: more configs
+    c6b = Config6b()
+    configs = [c1, c3, c5, c6]#TODO: more configs
 
-    filenameFormat = "{config}-{filter}-{threshold}-{subBags}.txt"
+    filenameFormat = "{config}-{filter}-{threshold}-{preFilter}-{subBags}-{neighbours}.txt"
     for dataset in datasets:
         for config in configs:
             for f in config.filters:
@@ -70,8 +86,10 @@ def runExperiments(outputBaseFolder):
                             filenameFormat.format(
                                 config = config.name,
                                 filter = f,
+                                preFilter = 'preFilter' if config.preFilter else 'postFilter',
                                 threshold = threshold,
-                                subBags = 'subBags' if config.useSubBags else "normal"
+                                subBags = 'subBags' if config.useSubBags else "normal",
+                                neighbours = 'useNeighbours' if config.useNeighbours else '',
                                 )
                             )
 
@@ -82,9 +100,13 @@ def runExperiments(outputBaseFolder):
                             f,
                             dataset[1],
                             outputFile,
-                            config.useSubBags)
+                            config.useSubBags,
+                            printToJson,
+                            config.useNeighbours,
+                            config.preFilter)
 
 if __name__ == "__main__":
     resultPath = os.path.join(os.getcwd(), 'results')
-    runExperiments(resultPath)
+    printToJson = False
+    runExperiments(resultPath, printToJson)
 
