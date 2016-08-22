@@ -28,9 +28,9 @@ We conducted several series of tests on various data sources. The different conf
 
 \emph{Configuration-6}: Enumerating articles by splitting them into sub-bags where each sub-bag was either a sentence, a paragraph or a sliding window of $k$ consecutive sub-bags for different values of $k$.
 
-\emph{Configuration-7}: Normal enumeration with filtering by including the $k$ highest TF-IFD scoring words like in Configuration-3 combined with filtering pairs to only include those who's words had a combined TF-IDF score above some provided threshold.
+%\emph{Configuration-7}: Normal enumeration with filtering by including the $k$ highest TF-IFD scoring words like in Configuration-3 combined with filtering pairs to only include those who's words had a combined TF-IDF score above some provided threshold.
 
-\emph{Configuration-8}: Like Configuration-7 but using sub-bags for enumeration, either based on sentences, paragraphs or a sliding window.
+%\emph{Configuration-8}: Like Configuration-7 but using sub-bags for enumeration, either based on sentences, paragraphs or a sliding window.
 
 Each configuration was tested with several different parameters on real data obtained by crawling various sources for on-line news. The crawled articles were stored along with their dates of publication so that they could later be consumed in the same order that they would have arrived should they have been processed by an on-line news monitoring system. For each digested article the original article was printed along with the output of the enumeration and later evaluated. 
 

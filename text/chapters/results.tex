@@ -1,7 +1,67 @@
 \chapter{Results}
 \label{chapter:results}
 TODO: present the results of the tests. Highlight what worked well and what didn't. Compare the different approaches both to each other and also to existing methods in literature and point out advantages and drawbacks.
-In this chapter we will look at the results of the experiments discussed in chapter~\ref{chapter:experiments} as well as discuss and compare the performance of the different approaches.
+In this chapter we will look at the results of the experiments discussed in chapter~\ref{chapter:experiments}.
 
-\section{D1}
-Dataset D1 consists of very short summarized articles and headlines from articles who all relate to the same topic: the United States 2016 presidential election.
+\Crefrange{tab:d1}{tab:d4} show the ratio of articles which resulted in no new words, no new pairs or both. In the cases where filtering was applied a shorthand for the filter type (cf=collection frequency, tf=term frequency) is included as well as the threshold. We can note that filtering does in fact increase the number of empty output-sets of either size. 
+
+
+\begin{table}
+  \begin{tabular}{|l|c|c|c|}
+    \hline
+    &  No new words & No new Pairs & Both (empty enumeration) \\ \hline
+    Configuration1                    & 0.04  & 0.03  & 0.01 \\ \hline
+    Configuration3 (cf: 5)            & 0.00  & 1.00  & 0.93 \\ \hline
+    Configuration3 (tf: 5)            & 0.58  & 0.42  & 0.41 \\ \hline
+    Configuration3 (tfidf: 5)         & 0.05  & 0.35  & 0.01 \\ \hline
+    Configuration5 (cf: 5)            & 0.19  & 0.92  & 0.85 \\ \hline
+    Configuration5 (tf: 5)            & 0.01  & 0.99  & 0.96 \\ \hline
+    Configuration5 (tfidf: 5)         & 0.00  & 0.74  & 0.01 \\ \hline
+    Configuration6                    & 0.04  & 0.03  & 0.01 \\ \hline
+    Configuration6 (tfidf: 5)         & 0.04  & 0.52  & 0.02 \\ \hline
+  \end{tabular}
+  \caption{The outcomes from running different configurations on dataset D1}
+  \label{tab:d1}
+\end{table}
+
+\begin{table}
+  \begin{tabular}{|l|c|c|c|}
+    \hline
+    &  No new words & No new Pairs & Both (empty enumeration) \\ \hline
+    Configuration1                    & 0.10  & 0.01  & 0.00 \\ \hline
+    Configuration3 (tfidf: 5)         & 0.12  & 0.25  & 0.00 \\ \hline
+    Configuration5 (tfidf: 5)         & 0.01  & 0.69  & 0.00 \\ \hline
+    Configuration6                    & 0.10  & 0.01  & 0.00 \\ \hline
+    Configuration6 (tfidf: 5)         & 0.11  & 0.36  & 0.01 \\ \hline
+  \end{tabular}
+  \caption{The outcomes from running different configurations on dataset D2}
+  \label{tab:d2}
+\end{table}
+
+\begin{table}
+  \begin{tabular}{|l|c|c|c|}
+    \hline
+    &  No new words & No new Pairs & Both (empty enumeration) \\ \hline
+    Configuration1                    & 0.16  & 0.10  & 0.01 \\ \hline
+    Configuration3 (tfidf: 5)         & 0.16  & 0.30  & 0.01 \\ \hline
+    Configuration5 (tfidf: 5)         & 0.11  & 0.55  & 0.01 \\ \hline
+    Configuration6                    & 0.16  & 0.10  & 0.01 \\ \hline
+    Configuration6 (tfidf: 5)         & 0.16  & 0.32  & 0.01 \\ \hline
+  \end{tabular}
+  \caption{The outcomes from running different configurations on dataset D3}
+  \label{tab:d3}
+\end{table}
+
+\begin{table}
+  \begin{tabular}{|l|c|c|c|}
+    \hline
+    &  No new words & No new Pairs & Both (empty enumeration) \\ \hline
+    Configuration1                    & 0.13  & 0.74  & 0.13 \\ \hline
+    Configuration3 (tfidf: 5)         & 0.23  & 0.74  & 0.65 \\ \hline
+    Configuration5 (tfidf: 5)         & 0.18  & 0.65  & 0.33 \\ \hline
+    Configuration6                    & 0.18  & 0.64  & 0.08 \\ \hline
+    Configuration6 (tfidf: 5)         & 0.32  & 0.64  & 0.55 \\ \hline
+  \end{tabular}
+  \caption{The outcomes from running different configurations on dataset D4}
+  \label{tab:d4}
+\end{table}
