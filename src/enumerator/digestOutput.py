@@ -127,7 +127,7 @@ if __name__ == '__main__':
     parser.add_argument('-k', '--keywords', nargs='*')
     args = parser.parse_args()
     if(len(args.diff) > 0):
-        diff(args.diff[0], args.diff[1], args.output)
+        diff(args.diff[0], args.diff[1])
     else:
         digest(args.input, args.output, args.keywords)
 

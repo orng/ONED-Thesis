@@ -193,8 +193,8 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--neighbours', action='store_true')
     parser.add_argument('-t', '--threshold', type=float, default=10)
     parser.add_argument('-f', '--filter', default='none')
-    parser.add_argument('-p', '--preFilter', default='none')
-    parser.add_argument('-j', '--printToJson', default='none')
+    parser.add_argument('-p', '--preFilter', action='store_true')
+    parser.add_argument('-j', '--printToJson',action='store_true')
     parser.add_argument('-o', '--output', default=RESULTFILE)
     parser.add_argument('articles', nargs='*')
     args = parser.parse_args()
@@ -209,6 +209,6 @@ if __name__ == '__main__':
                 resultFile=args.output,
                 useSubBags=args.subBags,
                 useNeighbours=args.neighbours,
-                printToJson=args.printToJson,
+                printJson=args.printToJson,
                 preFilter=args.preFilter
             )

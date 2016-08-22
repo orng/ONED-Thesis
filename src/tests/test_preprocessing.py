@@ -18,10 +18,10 @@ class PreprocessingTests(unittest.TestCase):
         self.assertEqual(expected, result)
 
     def test_remove_punctuation(self):
-        string = u"Great... wtf? ffs!"
-        expected = u"Great wtf ffs"
+        string = u"Great... wtf? ffs! Don't hurt me \"Donald\""
+        expected = ['Great', 'wtf', 'ffs', 'Don', 't', 'hurt', 'me', 'Donald']
         result = pre.remove_punctuation(string)
-        self.assertEqual(expected, result)
+        self.assertEqual(expected, result.split())
 
     def test_stem_words(self):
         words = ['The', 'Horizontal', 'dogs', 'are', 'chewing', 'the', 'puppies']

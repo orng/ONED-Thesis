@@ -67,9 +67,23 @@ class FiltersTests(unittest.TestCase):
         cats = ['cat' for i in range(5)]
         rest = ['cow', 'chicken', 'pig']
         animals = dogs + cats + rest
-        expected = ['dog']
+        expected = ['dog', 'cat']
+        expectedFreqList = [('dog', 10), ('cat', 5), ('cow', 1), ('chicken', 1), ('pig', 1)]
         wordFreq = filters.collection_frequency(animals, defaultdict(int))
-        result = filters.filter_common(animals, wordFreq, 0.25)
+        result, freqList = filters.filter_common(animals, wordFreq, 2)
+        self.assertEqual(expected, result)
+        self.assertEqual(set(expectedFreqList), set(freqList))
+
+    def test_filter_documentFrequency(self):
+        words = ['dog', 'cat', 'chicken']
+        freqDict = defaultdict(int)
+        freqDict['dog'] = 1
+        freqDict['cat'] = 6
+        freqDict['cow'] = 4
+        freqDict['chicken'] = 2
+        expected = ['dog', 'chicken']
+        wordFreq = filters.document_frequency(words, freqDict)
+        result, freqList = filters.filter_documentFrequency(words, wordFreq, 2)
         self.assertEqual(expected, result)
 
     def test_filter_overThreshold_firstItem(self):

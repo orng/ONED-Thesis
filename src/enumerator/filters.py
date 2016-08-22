@@ -23,16 +23,17 @@ def filterWordList(words, wordFrequency, filterType, threshold, docuCount):
     wordsToFilter = []
     tfidfList = []
     if filterType == 'cf':
-        wordsToFilter = filter_common(words, wordFrequency, threshold)
         wordFrequency  = collection_frequency(words, wordFrequency)
+        wordsToFilter, tfidfList = filter_common(words, wordFrequency, threshold)
     elif filterType == 'df':
-        wordsToFilter = filter_overThreshold(words, wordFrequency, threshold, docuCount-1)
         wordFrequency = document_frequency(words, wordFrequency)
+        wordsToFilter, tfidfList = filter_documentFrequency(words, wordFrequency, threshold)
+        #wordsToFilter = filter_overThreshold(words, wordFrequency, threshold, docuCount-1)
     elif filterType == 'tfidf':
         wordsToFilter, tfidfList = filter_tfidf(words, wordFrequency, threshold, docuCount)
         wordFrequency = document_frequency(words, wordFrequency)
     elif filterType == 'none':
-        wordsToFilter, tfidfList = filter_tfidf(words, wordFrequency, -10.0, docuCount)
+        wordsToFilter, tfidfList = filter_tfidf(words, wordFrequency, len(words), docuCount)
         wordFrequency = document_frequency(words, wordFrequency)
     else:
         raise Exception("Invalid filter type" + filterType)
@@ -57,7 +58,7 @@ def pair_tfidf(pair, tfidfDict):
 #TODO/Note: tests indicate that we need to train like 10 articles first, 
 # investigate further and include in report maybe?
 def filter_pairs_tfidf(pairs, tfidfList):
-    #return pairs #TODO: remove this temporary line
+    return pairs #TODO: remove this temporary line
     tfidfDict = {x: y for (x,y) in tfidfList}
     retPairs = []
     for pair in pairs:
@@ -102,6 +103,9 @@ def filter_common(wordList, frequencyDict, threshold):
     in the frequencyDict
     """
     freqTuples = sorted(frequencyDict.items(), key = lambda x: x[1], reverse=True)
+    wordsToInclude = [x[0] for x in freqTuples[:int(threshold)]]
+    return wordsToInclude, freqTuples
+    
     totalFreq = 0
     total = sum(frequencyDict.values())
     mostFrequent = []
@@ -115,6 +119,12 @@ def filter_common(wordList, frequencyDict, threshold):
         mostFrequent.append(nextTuple[0])
         totalFreq += frequency
     return mostFrequent
+
+def filter_documentFrequency(wordList, frequencyDict, threshold):
+    freqTuples = sorted(frequencyDict.items(), key = lambda x: x[1])
+    wordsToInclude = [x[0] for x in freqTuples[:int(threshold)]]
+    return wordsToInclude, freqTuples
+
 
 def filter_overThreshold(wordList, frequencyDict, threshold, seenDocuments):
     """
