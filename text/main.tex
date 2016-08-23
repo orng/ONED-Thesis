@@ -9,7 +9,12 @@
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 \usepackage{csquotes}
+\usepackage{cleveref}
 
+% BigO command
+\newcommand{\BigO}[1]{\ensuremath{\operatorname{O}\bigl(#1\bigr)}}
+
+%listings
 \usepackage{listings}
 \lstset{
   basicstyle=\footnotesize\ttfamily,
@@ -33,8 +38,8 @@
 ]{biblatex}
 \addbibresource{references.bib}
 
-\usepackage{cleveref}
 
+% ====== Fancy header
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
@@ -44,6 +49,7 @@
 \fancyfoot[LE,RO]{\thepage}
 \fancyfoot[LO,CE]{Chapter \thechapter}
 \fancyfoot[CO,RE]{\thesisAuthor}
+% ======
 
 \newcommand{\thesisTitle}{On-line New Event Detection Using Minimal Sets}
 \newcommand{\thesisAuthor}{Örn Guðjónsson}
