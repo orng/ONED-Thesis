@@ -1,6 +1,5 @@
 \chapter{Experiments}
 \label{chapter:experiments}
-TODO: explain in detail out implementations, approaches tested, how we tested and on what datasets, how the datasets were obtained etc.
 
 We implemented the concepts discussed in chapter~\ref{chapter:method} using the Python (TODO: CITATION) programming language. We then used these implementations to test the effectiveness of the various methods on several different datasets. In this chapter we discuss our implementation in some detail as well as how the tests were carried out along with what data was used for testing.
 
@@ -11,41 +10,45 @@ For our implementation we chose Python because it supports many high-level conce
 The NLTK provided us with most of the parts needed for preprocessing: we used the built-in word-tokenizer for splitting whole-string articles into lists of words,  stopwords from the English corpus for stopword-removal and the porter2 stemmer for fast and simple stemming of words. Python's string module provided us with a list of punctuation characters which we used to remove punctuation. Our pre-processing step first removed any punctuation character, then tokenized the input-string, removed all the stopwords then stemmed each of the tokens. (TODO: CITATIONS? PORTER2, nltk)
 
 \subsection{Enumeration}
-We have implemented the algorithm described in section~\label{method:enumeration}. Our implementation uses sets of strings (or Python's frozensets in cases where the sets had to be hashed) to represent the bags of words to enumerate, a list of bags (list of sets of strings) to store previously seen bags and a dictionary (hashmap) with frozensets as keys and integers as values for mapping previously seen minimal new sets to the number of the bag in which they first appeared. To simplify analysis we limit our implementation to only look for candidate sets of up to size 2.
+We have implemented the algorithm described in section~\ref{method:enumeration}. Our implementation uses sets of strings (or Python's frozensets in cases where the sets had to be hashed) to represent the bags of words to enumerate, a list of bags (list of sets of strings) to store previously seen bags and a dictionary (hashmap) with frozensets as keys and integers as values for mapping previously seen minimal new sets to the number of the bag in which they first appeared. We limit the enumeration to only consider subsets of size two or smaller.
 
-\section{Tests}
-We conducted several series of tests on various data sources. The different configurations and approaches which we tested were:
+\section{Experiments}
+We conducted a series of tests on various data sources using the base-approach to enumeration as well as the different extensions described in \cref{chapter:method}. We created several configurations, each using one or more of the aforementioned approaches. Each configuration was tested on four different sets of articles and the result of each enumerated article stored into a text file. Additionally, for word found in a minimal new set of size two we printed the amount of such minimal new sets the words occurred. The configurations we used in our experiments were as follows:
+
+%NOTE TO SELF: renaming configurations here, this will no longer match the result files.
+% Mapping (old->new): 3->2, 5->3, 6->4
 
 \emph{Configuration-1}: The base algorithm without any further analysis or filtering of the input and output sets beyond the basic pre-processing described in section~\ref{method:preprocessing}. Additionally, we conducted experiments with sorting new pairs in descending order based on the minimum distance between the words in the pairs or the combined number of minimal-new sets that the words appeared in. In the latter case we also outputted the number of minimal-new sets the words appeared in.
 
-\emph{Configuration-2}: Simple output filtering using either TF-IDF, document frequency or collection frequency by only outputting sets which contained at least one words with a score above the given filtering threshold. 
+%\emph{Configuration-2}: Simple output filtering using either TF-IDF, document frequency or collection frequency by only outputting sets which contained at least one words with a score above the given filtering threshold. 
 
-\emph{Configuration-3}: The same as Configuration-2 except filtering picked the words with the $k$ highest scores, where $k$ was the given threshold value. Tested with several different values of $k$.
+\emph{Configuration-2}: Output filtering where any minimal-set containing at least one of the $k$ highest scoring words was included in the output, for positive integer numbers of $k$. 
 
-\emph{Configuration-4}: Configuration-2 but applying filtering prior to enumeration.
+%\emph{Configuration-4}: Configuration-2 but applying filtering prior to enumeration.
 
-\emph{Configuration-5}: Configuration-3 but applying filtering prior to enumeration.
+\emph{Configuration-3}: Filtering using the same technique as configuration-3, except filtering was applied prior to enumeration.
 
-\emph{Configuration-6}: Enumerating articles by splitting them into sub-bags where each sub-bag was either a sentence, a paragraph or a sliding window of $k$ consecutive sub-bags for different values of $k$.
+%I removed neighbour stuff.
+\emph{Configuration-4}: Enumerating articles by splitting them into sub-bags where each sub-bag was a sentence.
 
 %\emph{Configuration-7}: Normal enumeration with filtering by including the $k$ highest TF-IFD scoring words like in Configuration-3 combined with filtering pairs to only include those who's words had a combined TF-IDF score above some provided threshold.
 
 %\emph{Configuration-8}: Like Configuration-7 but using sub-bags for enumeration, either based on sentences, paragraphs or a sliding window.
 
-Each configuration was tested with several different parameters on real data obtained by crawling various sources for on-line news. The crawled articles were stored along with their dates of publication so that they could later be consumed in the same order that they would have arrived should they have been processed by an on-line news monitoring system. For each digested article the original article was printed along with the output of the enumeration and later evaluated. 
-
-\subsection{Evaluation}
-Since we have not yet found a good quantification method for performing automatic New Event Detection we evaluated the results of our test runs manually by comparing the outputs of the various configurations. In particular we were interested in finding methods which prioritized minimal new sets which captured the main points of the input articles. 
 
 \subsection{Data}
-All of the data that we used for testing was real data obtained from various sources from the internet, they contained articles of various types and lengths since we also wanted to identify to some extent for what type of input the approaches where successful. The datasets we used were:
+All of the data that we used for testing was real data obtained by crawling various sources from the internet. They contain articles of various types and lengths since one of our goals was to identify to some extent for what type of input the approaches where successful. The crawled articles were stored along with their dates of publication so that they could later be consumed in the same order that they would have arrived had they been processed by an on-line monitoring system. We used the following four different datasets for testing:
 
-\emph{D1}: A collection of very short summary articles and headlines collected from articles regarding the 2016 presidential election in the USA, gathered from pbs.org, reuters.com and cbsnews.com (TODO: CITATIONS!). The data was gathered on 04.04.2016 containing articles published on dates ranging from 03.03.2016 to 04.04.2016 (TODO: HOW MANY ARTICLES?). This dataset served to test our approach on short articles within a narrow topic. Our hope was that short articles within a shared topic would provide good results, since high word density within a shared topic combined with the low overall word count of each article would decrease the amount of new words found and instead yield interesting new pairs.
+\emph{D1}: A collection of very short summary articles and headlines collected from articles regarding the 2016 presidential election in the USA, gathered from pbs.org, reuters.com and cbsnews.com (TODO: CITATIONS!). The data was gathered on 04.04.2016 containing 300 stories published on dates ranging from 03.03.2016 to 04.04.2016. This dataset served to test our approach on short stories within a narrow topic. Our hope was that short articles within a shared topic would provide good results, since high word density within a shared topic combined with the low overall word count of each article would decrease the amount of new words found and instead yield interesting new pairs.
 
-\emph{D2}: Timelines of president Barack Obama's years of presidency, '09, '10 and '11, taken from wikipedia.org (TODO: citation). Similar to D1 each point of the timeline can be regarded as a very short article and in this case is very likely to refer to an event. The data was gathered on (TODO: DATE!).
+\emph{D2}: Timelines of president Barack Obama's years of presidency, '09, '10 and '11, taken from wikipedia.org (TODO: citation). Each point of the timeline can be regarded as a very short article and in this case is very likely to refer to an event. The data was gathered on 26.04.2016 and contained 419 stories in total.
 
-\emph{D3}: A chronological account of the events of the second war taken from (TODO: CITATION!) where we treated each paragraph as a separate article. The point of this dataset was to test our approaches on slightly longer and less densely focused articles within a single topic. The data was gathered on (TODO: DATE!).
+\emph{D3}: A chronological account of the events of the second war taken from (TODO: CITATION!) where we treated each paragraph as a separate article. The point of this dataset was to test our approaches on slightly longer and less densely focused articles within a single topic. The data was gathered on 21.03.2016 and contained 495 stories in total.
 
-\emph{D4}: Real life full-length news articles taken from reuters.com (TODO: CITATION!). The data was gathered on 03.08.2016 and includes articles dating from 04.11.2016-03.08.2016. The purpose of this dataset was to simulate real-life usage of an ONED system on a large set of data.
+\emph{D4}: Real life full-length news articles taken from reuters.com (TODO: CITATION!). The data was gathered on 03.08.2016 and includes 5227 articles dating from 04.11.2016 to 03.08.2016. The purpose of this dataset was to simulate real-life usage of an ONED system on a large set of data.
 
-In chapter~\ref{chapter:results} we present and analyse the results of our tests.
+\subsection{Evaluation}
+Evaluation of the results was done through manual evaluation and comparison of the results outputted by the experiments. In particular, we were interested in finding methods which prioritized minimal new sets which captured the main points of the input articles. 
+
+
+In chapter~\ref{chapter:results} we present the results of our tests and in \cref{chapter:discussion} we discuss and analyse those results.

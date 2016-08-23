@@ -39,7 +39,7 @@ When enumerating bag $B_{i}$ we store $X$ along with $f(X)=i$ for each of the ca
 \label{method:preprocessing}
 In order to enumerate an article, some preprocessing is required. Incoming articles are tokenized, i.e. split into lists of words, stopwords, the most common words of the input language, are removed along with any punctuation and the remaining words are stemmed using a porter2 (TODO: citation) stemmer and converted to lowercase.
 
-\section{Approaches}
+\section{Extensions}
 As explained in seciton~\ref{section:idea} we might want to improve the performance of our results by limiting the outputs of the enumerations. Two simple ways for doing this are to simply limit the input the enumeration algorithm receives or filtering it's output.
 In this section we will discuss the approaches we examined in order to try to accomplish this which mostly are based on filtering common or unimportant words, prioritizing words that occur in many minimal new pairs and prioritize pairs of words that appear with close proximity.
 

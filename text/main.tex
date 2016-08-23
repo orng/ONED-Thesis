@@ -9,10 +9,6 @@
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 \usepackage{csquotes}
-\usepackage{cleveref}
-
-% BigO command
-\newcommand{\BigO}[1]{\ensuremath{\operatorname{O}\bigl(#1\bigr)}}
 
 %listings
 \usepackage{listings}
@@ -24,6 +20,7 @@
 
 \usepackage{amsthm} % for theorems
 \newtheorem{definition}{Definition}
+\usepackage{amsmath}
 
 \usepackage[hidelinks]{hyperref} %clickable links with no border
 
@@ -38,10 +35,12 @@
 ]{biblatex}
 \addbibresource{references.bib}
 
+\usepackage{cleveref}
 
 % ====== Fancy header
 \usepackage{fancyhdr}
 \pagestyle{fancy}
+\setlength{\headheight}{15pt} %Silence warning about too small headheight
 
 \fancyhead{}
 \fancyhead[RO,LE]{\thesisTitle}
@@ -53,6 +52,8 @@
 
 \newcommand{\thesisTitle}{On-line New Event Detection Using Minimal Sets}
 \newcommand{\thesisAuthor}{Örn Guðjónsson}
+% BigO command
+\newcommand{\BigO}[1]{\ensuremath{\operatorname{O}\bigl(#1\bigr)}}
 
 \title{
   {\thesisTitle}\\
@@ -85,6 +86,7 @@
 \input{chapters/experiments}
 \input{chapters/results}
 \input{chapters/discussion}
+\input{chapters/conclusion}
 
 \printbibliography
 \end{document}
