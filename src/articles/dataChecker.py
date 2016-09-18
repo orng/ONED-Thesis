@@ -12,7 +12,7 @@ def checkJson(filename):
     processed = {}
     res = []
     for article in articles:
-        #articleSet = frozenset(article['text'])
+        articleSet = frozenset(article['text'])
         articleName = article['url']
         if articleSet in processed.values():
             originalName = getKeyByValue(processed, articleSet)[0]
@@ -30,7 +30,7 @@ def getKeyByValue(d, v):
             
 if __name__ == "__main__":
     res = []
-    for filename in ['nba.jl', 'fox.jl']:
+    for filename in ['retures.jl', 'pbl.jl']:
         res = res + sorted(checkJson(filename), key=lambda d: d['date'])
 
     with open('processed.jl', 'w') as f:
