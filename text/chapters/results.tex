@@ -78,34 +78,39 @@ As is to be expected, the enumerations using Configuration-2 and Configuration-4
 
 %In \cref{tab:nodeCounts} we show the number of different new pairs in which the involved words occurred. We observe that in this case words which appear in many new pairs appear to have high significance within the article.
 
-\begin{lstlisting}[caption=Original text,
+\begin{lstlisting}[frame=single,
+    caption=Original text,
     label={lst:original},
   ]
   May 27  – President Obama holds a news conference in the East Room to answer questions about the  BP  Deepwater Horizon  Gulf of Mexico oil spill . 
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Configuration-1,
+\begin{lstlisting}[frame=single,
+    caption=Configuration-1,
     label={lst:config1},
   ]
 New Words: {deepwat, horizon}
 New Pairs: {(question, bp), (spill, question), (gulf, bp), (spill, answer), (bp, answer), (gulf, question), (gulf, spill), (question, news), (bp, news), (spill, news), (gulf, answer), (question, oil), (mexico, question), (mexico, bp), (mexico, spill), (spill, 27), (question, 27), (bp, 27), (answer, news), (gulf, news), (question, east), (bp, east), (spill, east), (bp, confer), (spill, confer), (question, confer), (question, room), (bp, room), (spill, room), (question, may), (spill, hold), (bp, hold), (question, hold), (oil, answer), (mexico, answer), (gulf, 27), (27, answer), (oil, news), (east, answer), (confer, answer), (gulf, confer), (room, answer), (gulf, room), (mexico, news), (gulf, may), (may, answer), (gulf, hold), (27, news), (east, news), (room, news), (may, news), (oil, 27), (confer, oil), (mexico, 27), (room, oil), (oil, hold), (mexico, confer), (east, 27), (mexico, room), (confer, 27), (mexico, hold), (room, 27), (27, may), (east, may)}
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Configuration-2,
+\begin{lstlisting}[frame=single,
+    caption=Configuration-2,
     label={lst:config3},
   ]
 New Words: {deepwat, horizon}
 New Pairs: {(question, bp), (spill, question), (gulf, bp), (spill, answer), (bp, answer), (gulf, question), (gulf, spill), (question, news), (bp, news), (spill, news), (question, oil), (mexico, question), (mexico, bp), (mexico, spill), (spill, 27), (question, 27), (bp, 27), (question, east), (bp, east), (spill, east), (bp, confer), (spill, confer), (question, confer), (question, room), (bp, room), (spill, room), (question, may), (spill, hold), (bp, hold), (question, hold)}
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Configuration-3,
+\begin{lstlisting}[frame=single,
+    caption=Configuration-3,
     label={lst:config5},
   ]
 New Words: {horizon, deepwat, question}
   New Pairs: {}
 \end{lstlisting}
 
-\begin{lstlisting}[caption=Configuration-4,
+\begin{lstlisting}[frame=single,
+    caption=Configuration-4,
     label={lst:config6},
   ]
 New Words: {deepwat, horizon}
@@ -143,7 +148,7 @@ New Pairs: {(question, bp), (spill, question), (gulf, bp), (spill, answer), (bp,
 \end{figure}
 
 \section{Benchmarks}
-For each configurations we measured the time taken to process each of the datasets. Although each run produced the same output we performed each test 20 times to achieve more accurate benchmarks. \Cref{tab:benchmark1} shows the average time per article for different configurations. \Cref{tab:benchmark2} shows the combined average time per article for the same configurations for configurations using sub-bags and vice versa.
+For each configuration we measured the time taken to process each of the datasets. Although each run produced the same output we performed each test 20 times to achieve more accurate benchmarks. \Cref{tab:benchmark1} shows the average time per article for different configurations. \Cref{tab:benchmark2} shows the combined average time per article for the same configurations for configurations using sub-bags and vice versa.
 
 \begin{center}
 \begin{table}

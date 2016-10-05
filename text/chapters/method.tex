@@ -1,6 +1,6 @@
 \chapter{Method}
 \label{chapter:method}
-On-line new event detection is hard~\cite{allan2000hard}. In this chapter we present a new method for ONED, based around the concept of \emph{minimal new pairs}. We explain the rationale behind the idea, give a detailed explanation of the base algorithm and discuss some of the approaches we have examined for expanding upon the base idea.
+On-line new event detection is hard~\cite{allan2000hard}. In this chapter we present a new method which aims to perform ONED, based around the concept of \emph{minimal new pairs}. We explain the rationale behind the idea, give a detailed explanation of the base algorithm and discuss some of the approaches we have examined for expanding upon the base idea.
 
 
 \section{The basic idea}
@@ -35,7 +35,7 @@ When enumerating minimal new sets of bag $B_{i}$ we store $X$ along with $f(X)=i
 In order to enumerate minimal sets from an article, some preprocessing is required. Incoming articles are tokenized, i.e. split into lists of words, stopwords, the most common words of the input language, are removed along with any punctuation and the remaining words are stemmed using a Porter2~\cite{porter2002english} stemmer and converted to lowercase.
 
 \section{Extensions}
-As explained in section~\ref{section:idea} we might want to improve the performance of our results by limiting the outputs of the enumerations. Two simple ways for doing this are to simply limit the input the enumeration algorithm receives or filtering its output.
+As explained in section~\ref{section:idea} we might want to improve the performance of our results by limiting the outputs of the enumerations. Two simple ways of doing this are to simply limit the input the enumeration algorithm receives or filtering its output.
 In this section we will discuss the approaches we examined in order to try to accomplish this which mostly are based on filtering common or unimportant words, prioritizing words that occur in many minimal new pairs and prioritize pairs of words that appear with close proximity.
 
 \subsection{Filtering common or unimportant words}
@@ -66,10 +66,10 @@ Let the sub-bags $P_{k} := [S_{0}, S_{1},...,S_{q}]$ be a list of the sub-bags g
 Just like in the original enumeration algorithm, we don't have to rely on naive exhaustive search to calculate $f'(X)$ for any $|X|>1$. For each $Y\subset X$ we can lookup $f'(Y)$ and if a pair $(k, [l_{0}... l_{q}])$ is found we check $X \subseteq S_{k, l_{i}} \mid S_{k, l_{i}} \in P_{k}, i\in[0,q]$. If such a $S_{k,l_{i}}$ is found we know that $X$ is old. Furthermore we can conclude that $X$ was new at the smallest $k \mid f'(Y)=(k, [l_{0},..., l_{q}])$.
 
 \begin{theorem}
-  Given that we have previously processed bags $B_{1}...B_{n-1}$ the minimal-new sets of maximum size $h$ can be enumerated from sub-bag $S_{n, j}\in B_{n}$ in \BigO{p|S_{j}|2^{h}/h!}, where $p$ is the maximum amount of sub-bags in any bag $B_{i} \mid i \in \mathbb{N}, i \in [1,n-1]$.
+  Given that we have previously processed bags $B_{1}...B_{n-1}$ the minimal-new sets of maximum size $h$ can be enumerated from sub-bag $S_{n, j}\in B_{n}$ in \BigO{p|S_{j}|2^{h}/h!}, where $p$ is the amount of sub-bags in any bag $B_{i} \mid i \in \mathbb{N}, i \in [1,n-1]$.
 \end{theorem}
 \begin{proof}
-  For any given candidate set $X \subseteq S_{n, j}$ of size $r$ containing only words which we have previously seen we know that if $f'(X)$ is undefined we have to look up $f'(Y)$ for each $Y \subset X$. For $f'(Y) = (k, l_{0},..l_{q})$ we then check if $Y \subseteq S_{k, t} \mid t \in f'(Y)$. We will have to lookup at most $2^{r}-2$ candidate sets and check at most $p$ possible subsets $S_{k, t}$. So we can check if a set $X$ of size $r$ is new in \BigO{p2^r}. The number of candidate sets we have to consider is $\binom{|S_{n, j}|}{r} < \frac{|B_{n}|}{r!}$. It follows that finding all minimal new sets of size $h$ is bounded by \BigO{p|S_{j}|2^{h}/h!}.
+  For any given candidate set $X \subseteq S_{n, j}$ of size $r$ containing only words which we have previously seen we know that if $f'(X)$ is undefined we have to look up $f'(Y)$ for each $Y \subset X$. For $f'(Y) = (k, l_{0},..,l_{q})$ we then check if $Y \subseteq S_{k, t} \mid t \in f'(Y)$. We will have to lookup at most $2^{r}-2$ candidate sets and check at most $p$ possible subsets $S_{k, t}$. So we can check if a set $X$ of size $r$ is new in \BigO{p2^r}. The number of candidate sets we have to consider is $\binom{|S_{n, j}|}{r} < \frac{|B_{n}|}{r!}$. It follows that finding all minimal new sets of size $h$ is bounded by \BigO{p|S_{j}|2^{h}/h!}.
 \end{proof}
 
 \subsubsection{Joining sub-bags}
