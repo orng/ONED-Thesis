@@ -23,6 +23,8 @@
 \newtheorem{theorem}{Theorem}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{pdfpages}
+\usepackage{minted}
 
 \usepackage[hidelinks]{hyperref} %clickable links with no border
 
@@ -37,7 +39,7 @@
 ]{biblatex}
 \addbibresource{references.bib}
 
-% Note: cannot be too early or everything is ruined
+% Note: cannot be too early or everything is ruined, definitely has to be loaded after hyperref
 \usepackage{cleveref}
 
 % ====== Fancy header
@@ -53,26 +55,28 @@
 \fancyfoot[CO,RE]{\thesisAuthor}
 % ======
 
-\newcommand{\thesisTitle}{On-line New Event Detection \\ Using Minimal Sets}
+\newcommand{\thesisTitle}{On-line New Event Detection Using Minimal New Sets}
 \newcommand{\thesisAuthor}{Örn Guðjónsson}
 % BigO command
 \newcommand{\BigO}[1]{\ensuremath{\operatorname{O}\bigl(#1\bigr)}}
 
-\title{
-  {\thesisTitle}\\
+%\title{
+  %{\thesisTitle}\\
   %{\large Chalmers University of Technology}\\
-  {\includegraphics[scale=0.5]{Chalmers.jpg}}
-}
+  %{\includegraphics[scale=0.5]{Chalmers.jpg}}
+%}
 \author{\thesisAuthor}
 \date{\today} %TODO: fix date
 
 \begin{document}
-\maketitle
+%\maketitle
+\includepdf[pages={1}]{title/title.pdf}
 
 %\chapter*{Abstract}
 \input{chapters/abstract}
 
 %\chapter*{Dedication}
+\input{chapters/acknowledgements}
 %To mum and dad
 
 %\chapter*{Declaration}
@@ -92,4 +96,7 @@
 \input{chapters/conclusion}
 
 \printbibliography
+
+\appendix 
+\input{chapters/appendix}
 \end{document}

@@ -141,3 +141,34 @@ New Pairs: {(question, bp), (spill, question), (gulf, bp), (spill, answer), (bp,
   \caption{Average number of new words and new pairs per batch of 2.5\% of all articles in dataset D4}
   \label{fig:setPlot4}
 \end{figure}
+
+\section{Benchmarks}
+For each configurations we measured the time taken to process each of the datasets. Although each run produced the same output we performed each test 20 times to achieve more accurate benchmarks. \Cref{tab:benchmark1} shows the average time per article for different configurations. \Cref{tab:benchmark2} shows the combined average time per article for the same configurations for configurations using sub-bags and vice versa.
+
+\begin{center}
+\begin{table}
+  \begin{tabular}{|l|c|}
+    \hline
+    Configuration & time/article (s)  \\ \hline
+    Configuration-1                     & 0.3909 \\ \hline
+    Configuration-2 (tfidf: 15)         & 0.2939 \\ \hline
+    Configuration-4                     & 0.0533 \\ \hline
+    Configuration-4 (tfidf: 15)         & 0.0488 \\ \hline
+  \end{tabular}
+  \caption{Average runtimes per article using different configurations}
+  \label{tab:benchmark1}
+\end{table}
+\end{center}
+
+\begin{center}
+\begin{table}
+  \begin{tabular}{|l|c|}
+    \hline
+    Configuration & time/article (s)             \\ \hline
+    Configurations without sub-bags     & 0.3424 \\ \hline
+    Configurations with sub-bags        & 0.0510 \\ \hline
+  \end{tabular}
+  \caption{Average runtimes per article using sub-bags or not}
+  \label{tab:benchmark2}
+\end{table}
+\end{center}
