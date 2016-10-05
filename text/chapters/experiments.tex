@@ -4,7 +4,7 @@
 We implemented the concepts discussed in chapter~\ref{chapter:method} using the Python programming language. We then used these implementations to test the effectiveness of the various methods on several different datasets. In this chapter we discuss our implementation in some detail as well as how the tests were carried out and what data was used for testing.
 
 \section{Implementation}
-For our implementation we chose Python because it supports many high-level concepts such as lambda functions, list comprehensions etc. as well as for its extensive standard library and excellent availability of good third-party libraries such as the Natural Language Tool Kit (NLTK)~\cite{nltk}.
+For our implementation we chose Python because it supports many high-level concepts such as lambda functions, list comprehensions etc. as well as for its extensive standard library and excellent availability of good third-party libraries such as the Natural Language Tool Kit (NLTK)~\cite{nltk}. The most important files are included in \cref{appendix:source} but the full source used in this project can be found on GitHub\footnote{\url{https://github.com/orng/ONED-Thesis}}.
 
 \subsection{Pre-processing}
 The NLTK provided us with most of the parts needed for preprocessing: we used the built-in word-tokenizer for splitting whole-string articles into lists of words,  stopwords from the English corpus for stopword-removal and the porter2 stemmer for fast and simple stemming of words. Python's string module provided us with a list of punctuation characters which we used to remove punctuation. Our pre-processing step first removed any punctuation character, then tokenized the input-string, removed all the stopwords and then stemmed each of the tokens.

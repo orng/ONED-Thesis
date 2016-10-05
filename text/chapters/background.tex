@@ -16,9 +16,9 @@ Papka, Allan and Lavrenko~\cite{papka1998online} use a single-pass clustering te
 
 Yang, Pierce and Carbonell~\cite{yang1998study} also use a single-pass clustering algorithm and incremental IDF for TF-IDF weighting, IDF is first trained on a dataset an then updated for each document. In order to increase efficiency and due to the temporal nature of events they use a sliding time-window to only compare incoming documents to stories within the time window. Additionally they also examine decay weighting where documents further away in time are marked as less important.
 
-Brants, Chen and Farahat~\cite{brants2003system} use a source-specific TF-IDF model where the news stream is comprised of multiple sources and certain words are more common depending on the source. Each incoming document is weighted and compared to previously seen documents using either Hellinger- or cosine-distance but normalized by subtracting the average distance of the current document to all other documents. %(TODO: more stuff that they do)
+Brants, Chen and Farahat~\cite{brants2003system} use a source-specific TF-IDF model where the news stream is comprised of multiple sources and certain words are more common depending on the source. Each incoming document is weighted and compared to previously seen documents using either Hellinger- or cosine-distance but normalized by subtracting the average distance of the current document to all other documents. 
 
-Another popular approach is to represent documents using named entities. The idea being that events can be summarized  by ``what'', ``where'', ``when'' and ``how'' as well as other similar properties. %(TODO: citation)
+Another popular approach is to represent documents using named entities. The idea being that events can be summarized  by ``what'', ``where'', ``when'' and ``how'' as well as other similar properties. 
 
 Yang et al.~\cite{yang2002topic} use a supervised learning algorithm to classify documents in an on-line document stream into pre-defined topic categories. Weighting is done using named entities. They then perform topic specific stopword removal and topic sensitive feature weighting.
 
