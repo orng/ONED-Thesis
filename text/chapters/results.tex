@@ -2,10 +2,10 @@
 \label{chapter:results}
 In this chapter we will look at the results of the experiments discussed in chapter~\ref{chapter:experiments}.
 
-\Crefrange{tab:d1}{tab:d4} show the ratio of articles which resulted in no new words, no new pairs or both. In the cases where filtering was applied a shorthand for the filter type (cf=collection frequency, tf=term frequency) is included as well as the threshold. We noted that filtering did in fact increase the number of empty output-sets of either size and in the cases of the collection frequency and term frequency filters along with any pre-enumeration filtering (Configuration-3) the change was quite drastic.
+\Crefrange{tab:d1}{tab:d4} show the ratio of articles which resulted in no new words, no new pairs or both. In the cases where filtering was applied, a shorthand for the filter type (cf=collection frequency, tf=term frequency) is included as well as the threshold. We noted that filtering did in fact increase the number of empty output-sets of either size and in the cases of the collection frequency and term frequency filters along with any pre-enumeration filtering (Configuration-3) the change was quite drastic.
 
 \begin{center}
-\begin{table}
+  \begin{table}[ht]
   \begin{tabular}{|l|c|c|c|}
     \hline
     &  No new words & No new Pairs & Both \\ \hline
@@ -25,7 +25,7 @@ In this chapter we will look at the results of the experiments discussed in chap
 \end{center}
 
 \begin{center}
-\begin{table}
+  \begin{table}[ht]
   \begin{tabular}{|l|c|c|c|}
     \hline
     &  No new words & No new Pairs & Both \\ \hline
@@ -41,7 +41,7 @@ In this chapter we will look at the results of the experiments discussed in chap
 \end{center}
 
 \begin{center}
-\begin{table}
+  \begin{table}[ht]
   \begin{tabular}{|l|c|c|c|}
     \hline
     &  No new words & No new Pairs & Both \\ \hline
@@ -57,7 +57,7 @@ In this chapter we will look at the results of the experiments discussed in chap
 \end{center}
 
 \begin{center}
-\begin{table}
+  \begin{table}[ht]
   \begin{tabular}{|l|c|c|c|}
     \hline
     &  No new words & No new Pairs & Both \\ \hline
@@ -121,29 +121,29 @@ New Pairs: {(question, bp), (spill, question), (gulf, bp), (spill, answer), (bp,
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[scale=0.70]{images/D1-plot.png}
-  \caption{Average number of new words and new pairs per batch of 2.5\% of all articles in dataset D1}
+  \includegraphics[scale=0.50]{images/D1-plot.png}
+  \caption{Average number of new words and new pairs per batch of 2.5\% of all articles in dataset D1. Green triangles are new pairs and red boxes are new words.}
   \label{fig:setPlot1}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[scale=0.70]{images/D2-plot.png}
-  \caption{Average number of new words and new pairs per batch of 2.5\% of all articles in dataset D2}
+  \includegraphics[scale=0.50]{images/D2-plot.png}
+  \caption{Average number of new words and new pairs per batch of 2.5\% of all articles in dataset D2. Green triangles are new pairs and red boxes are new words.}
   \label{fig:setPlot2}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[scale=0.70]{images/D3-plot.png}
-  \caption{Average number of new words and new pairs per batch of 2.5\% of all articles in dataset D3}
+  \includegraphics[scale=0.50]{images/D3-plot.png}
+  \caption{Average number of new words and new pairs per batch of 2.5\% of all articles in dataset D3. Green triangles are new pairs and red boxes are new words.}
   \label{fig:setPlot3}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[scale=0.70]{images/D4-plot.png}
-  \caption{Average number of new words and new pairs per batch of 2.5\% of all articles in dataset D4}
+  \includegraphics[scale=0.50]{images/D4-plot.png}
+  \caption{Average number of new words and new pairs per batch of 2.5\% of all articles in dataset D4. Green triangles are new pairs and red boxes are new words.}
   \label{fig:setPlot4}
 \end{figure}
 
@@ -151,7 +151,7 @@ New Pairs: {(question, bp), (spill, question), (gulf, bp), (spill, answer), (bp,
 For each configuration we measured the time taken to process each of the datasets. Although each run produced the same output we performed each test 20 times to achieve more accurate benchmarks. \Cref{tab:benchmark1} shows the average time per article for different configurations. \Cref{tab:benchmark2} shows the combined average time per article for the same configurations for configurations using sub-bags and vice versa.
 
 \begin{center}
-\begin{table}
+  \begin{table}[ht]
   \begin{tabular}{|l|c|}
     \hline
     Configuration & time/article (s)  \\ \hline
@@ -166,7 +166,7 @@ For each configuration we measured the time taken to process each of the dataset
 \end{center}
 
 \begin{center}
-\begin{table}
+  \begin{table}[ht]
   \begin{tabular}{|l|c|}
     \hline
     Configuration & time/article (s)             \\ \hline
