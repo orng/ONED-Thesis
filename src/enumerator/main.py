@@ -28,7 +28,7 @@ def loadWordbanks(wordbanks):
     texts = list()
     for item in wordbanks:
         texts = loadJson(item, texts)
-    return sorted(texts, key=lambda d: d['date'])#[:600]#TODO: remove limit
+    return sorted(texts, key=lambda d: d['date'])
 
 def textWithTitle(textItem):
     """
@@ -118,6 +118,7 @@ def enumerateTexts(
     sys.stdout.write("Processing: {0}/{1}\n".format(i, len(texts)))
     sys.stdout.write("Done!\n")
     sys.stdout.write("Completed in {time}s.".format(time=endTime-startTime))
+    resultFileObject.write("Completed in {time}s.".format(time=endTime-startTime))
 
     resultFileObject.close()
 

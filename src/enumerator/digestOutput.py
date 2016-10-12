@@ -60,7 +60,7 @@ def listToFrozenset(lst):
     Ouput:
         set([frozenset(['word']), 'frozenset([frozenset['some'], 'frozenset(['pair'])])])
     """
-    #TODO: this is retarded: how many of these do we have already?
+    #TODO: how many of these do we have already?
     #do something more sensible, perhaps try to update the bag code
     #to not produce this kind of stuff
     if type(lst) != type([]):

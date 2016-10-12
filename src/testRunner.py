@@ -24,7 +24,7 @@ class Config3(Config):
     def __init__(self):
         Config.__init__(self)
         self.filters = ['tfidf']#, 'cf', 'df']
-        self.thresholds = [5, 10, 15]
+        self.thresholds = [15]#[5, 10, 15]
         self.name = "c3"
 
 class Config5(Config3):
@@ -37,7 +37,7 @@ class Config6(Config):
     def __init__(self):
         Config.__init__(self)
         self.filters = ['none', 'tfidf']
-        self.thresholds = [5, 10, 15]
+        self.thresholds = [15] #[5, 10, 15]
         self.name = "c6"
         self.useSubBags = True
         self.useNeighbours = False
@@ -47,14 +47,6 @@ class Config6b(Config6):
         Config6.__init__(self)
         self.useNeighbours = True
 
-class Config7(Config):
-    #TODO: need more params to be able to filter pairs based on score
-    def __init__(self):
-        Config.__init__(self)
-        self.filters = ['none', 'tfidf']
-        self.thresholds = [5, 10, 15]
-        self.name = "c7"
-
 def runExperiments(outputBaseFolder, printToJson):
     dataDir = os.path.join(os.getcwd(), '..', 'data')
     d1 = ('d1', ['reuters.jl', 'cbs.jl', 'pbs.jl'])
@@ -62,8 +54,7 @@ def runExperiments(outputBaseFolder, printToJson):
     d3 = ('d3', ['ww2.jl'])
     d4 = ('d4', ['reutersNews0308.jl'])
     datasets = []
-    #for d in [d1, d2, d3, d4]:
-    for d in [d4]:
+    for d in [d1, d2, d3, d4]:
         paths = [os.path.join(dataDir, x) for x in d[1]]
         newD = (d[0], paths)
         datasets.append(newD)
@@ -74,8 +65,7 @@ def runExperiments(outputBaseFolder, printToJson):
     c5 = Config5()
     c6 = Config6()
     c6b = Config6b()
-    #configs = [c1, c3, c5, c6]#6b TODO: more configs
-    configs = [c5, c6]#6b TODO: more configs
+    configs = [c1, c3, c5, c6]#6b TODO: more configs
 
     filenameFormat = "{config}-{filter}-{threshold}-{preFilter}-{subBags}-{neighbours}.txt"
     for dataset in datasets:
@@ -111,7 +101,7 @@ def runExperiments(outputBaseFolder, printToJson):
                         break
 
 if __name__ == "__main__":
-    resultPath = os.path.join(os.getcwd(), '..', 'results')
+    resultPath = os.path.join(os.getcwd(), '..', 'moreResults')
     printToJson = False
     runExperiments(resultPath, printToJson)
 

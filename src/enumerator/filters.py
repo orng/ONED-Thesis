@@ -28,7 +28,6 @@ def filterWordList(words, wordFrequency, filterType, threshold, docuCount):
     elif filterType == 'df':
         wordFrequency = document_frequency(words, wordFrequency)
         wordsToFilter, tfidfList = filter_documentFrequency(words, wordFrequency, threshold)
-        #wordsToFilter = filter_overThreshold(words, wordFrequency, threshold, docuCount-1)
     elif filterType == 'tfidf':
         wordsToFilter, tfidfList = filter_tfidf(words, wordFrequency, threshold, docuCount)
         wordFrequency = document_frequency(words, wordFrequency)
@@ -55,10 +54,8 @@ def pair_tfidf(pair, tfidfDict):
     tfidf = tfidfDict[first] + tfidfDict[second]
     return tfidf
 
-#TODO/Note: tests indicate that we need to train like 10 articles first, 
-# investigate further and include in report maybe?
 def filter_pairs_tfidf(pairs, tfidfList):
-    return pairs #TODO: remove this temporary line
+    return pairs #remove this to filter top tfidf scoring words
     tfidfDict = {x: y for (x,y) in tfidfList}
     retPairs = []
     for pair in pairs:
@@ -89,7 +86,6 @@ def term_frequency(wordList):
     to how often they appear in the list in proportion to the length of the
     wordlist.
     """
-    #TODO: speed up with custom function to only traverse list once maybe?
     freqDict = defaultdict(float)
     freqDict = collection_frequency(wordList, freqDict)
     l = float(len(wordList))

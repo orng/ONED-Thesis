@@ -10,7 +10,7 @@ For our implementation we chose Python because it supports many high-level conce
 The NLTK provided us with most of the parts needed for preprocessing: we used the built-in word-tokenizer for splitting whole-string articles into lists of words,  stopwords from the English corpus for stopword-removal and the porter2 stemmer for fast and simple stemming of words. Python's string module provided us with a list of punctuation characters which we used to remove punctuation. Our pre-processing step first removed any punctuation character, then tokenized the input-string, removed all the stopwords and then stemmed each of the tokens.
 
 \subsection{Enumeration}
-We implemented the algorithm described in section~\ref{method:enumeration}. Our implementation used sets of strings (or Python's frozensets in cases where the sets had to be hashed) to represent the bags of words to enumerate, a list of bags (list of sets of strings) to store previously seen bags and a dictionary (hashmap) with frozensets as keys and integers as values for mapping previously seen minimal new sets to the number of the bag in which they first appeared. %We limited the enumeration to only consider subsets of size two or smaller.
+We implemented the algorithm described in section~\ref{method:enumeration}. Our implementation used sets of strings (or Python's frozensets in cases where the sets had to be hashed) to represent the bags of words to enumerate, a list of bags (list of sets of strings) to store previously seen bags and a dictionary (hashmap) with frozensets as keys and integers as values for mapping previously seen minimal new sets to the number of the bag in which they first appeared. 
 
 As discussed by Damaschke~\cite{damaschke2015pairs} the existence of small minimal-new sets is likely to prove more informative than large sets. In order to simplify results we therefore chose to limit the enumerations to only consider subsets of size two or smaller.
 
@@ -22,20 +22,12 @@ We conducted a series of tests on various data sources using the base-approach t
 
 \emph{Configuration-1}: The base algorithm without any further analysis or filtering of the input and output sets beyond the basic pre-processing described in section~\ref{method:preprocessing}. Additionally, we conducted experiments with sorting new pairs in descending order based on the minimum distance between the words in the pairs or the combined number of minimal-new sets that the words appeared in. In the latter case we also outputted the number of minimal-new sets the words appeared in.
 
-%\emph{Configuration-2}: Simple output filtering using either TF-IDF, document frequency or collection frequency by only outputting sets which contained at least one words with a score above the given filtering threshold. 
-
 \emph{Configuration-2}: Output filtering where any minimal-set containing at least one of the $k$ highest scoring words was included in the output, for positive integer numbers of $k$. 
-
-%\emph{Configuration-4}: Configuration-2 but applying filtering prior to enumeration.
 
 \emph{Configuration-3}: Filtering using the same technique as configuration-2, except filtering was applied prior to enumeration.
 
-%I removed neighbour stuff.
 \emph{Configuration-4}: Enumerating articles by splitting them into sub-bags where each sub-bag was a sentence.
 
-%\emph{Configuration-7}: Normal enumeration with filtering by including the $k$ highest TF-IFD scoring words like in Configuration-3 combined with filtering pairs to only include those who's words had a combined TF-IDF score above some provided threshold.
-
-%\emph{Configuration-8}: Like Configuration-7 but using sub-bags for enumeration, either based on sentences, paragraphs or a sliding window.
 
 \subsection{Data}
 All of the data that we used for testing was real data obtained by crawling various sources from the internet. They contain articles of various types and lengths since one of our goals was to identify to some extent for what type of input the approaches were successful. The crawled articles were stored along with their dates of publication so that they could later be consumed in the same order that they would have arrived had they been processed by an on-line monitoring system. We used the following four different datasets for testing:

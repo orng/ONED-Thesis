@@ -98,8 +98,6 @@ def enumerateBagHelper(newBag, bags, bagDict, n, i, isNewAtMFunc=isNewAtM):
     for subset in subsets:
         if isNewAtMFunc(subset, bags, bagDict, i):
             newSets.append(subset)
-            #i = f(subset, enumeratedBags) if i is not None
-            #bagDict[subset] = i
     return set(newSets)
 
 def enumerateBag(newBag, bags, bagDict):
@@ -116,7 +114,6 @@ def enumerateBag(newBag, bags, bagDict):
             :: dict(frozenset([string])) | dict(frozenset([frozenset([string])))
     """
     enumeration = set([])
-    #TODO: do the "stop as soon as all further X would be supersets.." thing
     for n in range(1, 3):
         enumeration = enumeration | enumerateBagHelper(newBag, bags, bagDict, n, len(bags) + 1)
         newBag = getSubsets(newBag, n) - enumeration
@@ -137,9 +134,6 @@ def enumerateMultiBag(newBags, bags, bagDict):
                 break
 
         subsetNr += 1
-    #newBags = [getSubsets(x, n) - enumeration for x in newBags]
-    #newBags = [x for x in newBags if x != set([])]
-    #if newBags == []:
     return (enumeration, bagDict)
 
 def enumerateMultiBagWithNeighbours(newBags, bags, bagDict):

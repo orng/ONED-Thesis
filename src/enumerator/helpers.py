@@ -162,7 +162,7 @@ def printEnumerationToFileObject(url, words, enumeration, fileobject, tfidfList)
 
 
 def enumerationToString(url, words, enumeration, tfidfList):
-    lineString = u'Url: {url}\nWords: {words}\nNew Words: {newWords}\nNew Pairs: {pairs}\nNodes: {nodes}\n\n\n'#TF-IDF: {tfidf}\n\n\n================================\n'
+    lineString = u'Url: {url}\nWords: {words}\nNew Words: {newWords}\nNew Pairs: {pairs}\nNodes: {nodes}\n\n\n'
     newWords = [x for x in enumeration if len(x) < 2]
     pairs = [x for x in enumeration if len(x) >= 2]
     tfidfDict = {x: y for (x,y) in tfidfList}
@@ -174,14 +174,12 @@ def enumerationToString(url, words, enumeration, tfidfList):
     nodes, edges = bag.enumerationToGraph(pairs)
     nodeDegrees = bag.nodeDegrees(edges)
     nodeDegreeStr = nodeDegreesToString(nodeDegrees)
-    #tfidfPairs = tfidfPairsToString(pairs, tfidfDict)
     lineString = lineString.format(
             url=url,
             words=words,
             newWords=newWordStr,
             pairs=pairStr,
             nodes=nodeDegreeStr,
-            #tfidf=tfidfPairs
         )
     return lineString.encode('UTF-8')
 
