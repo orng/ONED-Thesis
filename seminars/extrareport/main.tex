@@ -1,0 +1,78 @@
+\documentclass[12pt]{report}
+%prevent some stupid with fontspec and amsthm
+%see http://tex.stackexchange.com/questions/130491/xelatex-error-paragraph-ended-before-tempa-was-complete
+
+\let\zz\[\let\zzz\]
+\usepackage{fontspec}
+\let\[\zz\let\]\zzz
+
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+\usepackage{csquotes}
+
+%listings
+\usepackage{listings}
+\lstset{
+  basicstyle=\footnotesize\ttfamily,
+  columns=flexible,
+  breaklines=true
+}
+
+\usepackage{amsthm} % for theorems
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pdfpages}
+\usepackage{minted}
+
+\usepackage[hidelinks]{hyperref} %clickable links with no border
+
+\usepackage[
+    backend=biber,
+    style=numeric,
+    sortlocale=en_GB,
+    sorting=nty,
+    natbib=true,
+    url=false, 
+    doi=true,
+    eprint=false
+]{biblatex}
+\addbibresource{references.bib}
+
+% Note: cannot be too early or everything is ruined, definitely has to be loaded after hyperref
+\usepackage{cleveref}
+
+% ====== Fancy header
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\setlength{\headheight}{15pt} %Silence warning about too small headheight
+
+\fancyhead{}
+\fancyhead[RO,LE]{\thesisTitle}
+\fancyfoot{}
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[LO,CE]{Chapter \thechapter}
+\fancyfoot[CO,RE]{\thesisAuthor}
+% ======
+
+\newcommand{\thesisTitle}{Programming jobs in Sweden and Iceland}
+\newcommand{\thesisAuthor}{Örn Guðjónsson}
+% BigO command
+\newcommand{\BigO}[1]{\ensuremath{\operatorname{O}\bigl(#1\bigr)}}
+
+\title{
+  {\thesisTitle}\\
+  {\large Chalmers University of Technology}\\
+}
+\author{\thesisAuthor}
+\date{\today} %TODO: fix date
+
+\begin{document}
+\maketitle
+
+\input{chapters/content}
+
+
+\printbibliography
+\end{document}
